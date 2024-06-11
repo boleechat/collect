@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          node-version: '20'
 
       - name: Download Eternity.yml
         run: curl -o Eternity.yml https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml
@@ -34,3 +36,5 @@ jobs:
           git add collectproxy.yml
           git commit -m 'Update collectproxy.yml with latest rules and YouTube ad blocking'
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
