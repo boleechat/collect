@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          node-version: '20'
 
       - name: Download Eternity.yml
         run: curl -o Eternity.yml https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml
@@ -29,12 +27,12 @@ jobs:
           echo '- DOMAIN-SUFFIX,google-analytics.com,REJECT' >> Eternity.yml
 
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           mv Eternity.yml collectproxy.yml
           git add collectproxy.yml
           git commit -m 'Update collectproxy.yml with latest rules and YouTube ad blocking'
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://github-actions:${{ secrets.PAT_TOKEN }}@github.com/boleechat/collect.git HEAD:main
