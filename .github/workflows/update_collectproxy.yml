@@ -12,6 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Download Eternity.yml
         run: curl -o Eternity.yml https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml
 
