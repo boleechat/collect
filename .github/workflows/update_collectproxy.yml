@@ -1,0 +1,36 @@
+name: Update collectproxy.yml
+
+on:
+  schedule:
+    - cron: '0 * * * *' # 每小时运行一次
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  update-collectproxy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download Eternity.yml
+        run: curl -o Eternity.yml https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml
+
+      - name: Append YouTube ad blocking rules
+        run: |
+          echo '- DOMAIN-SUFFIX,googlevideo.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,ytimg.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,youtube.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,youtube-nocookie.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,doubleclick.net,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,googlesyndication.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,googleadservices.com,REJECT' >> Eternity.yml
+          echo '- DOMAIN-SUFFIX,google-analytics.com,REJECT' >> Eternity.yml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          mv Eternity.yml collectproxy.yml
+          git add collectproxy.yml
+          git commit -m 'Update collectproxy.yml with latest rules and YouTube ad blocking'
+          git push
