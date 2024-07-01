@@ -16,8 +16,14 @@ def fetch_remote_content():
 def process_content(content):
     start_index = content.find(CHANNEL_INFO)
     end_index = content.find(END_MARKER, start_index)
+    
+    print("Content fetched: ", content[:500])  # Print the first 500 characters of content for debugging
+    print("Start index: ", start_index)
+    print("End index: ", end_index)
+    
     if start_index == -1 or end_index == -1:
         raise Exception("Markers not found in the content")
+    
     proxies_content = content[start_index:end_index].strip()
     return proxies_content
 
