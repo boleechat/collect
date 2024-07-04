@@ -3,6 +3,7 @@ name: Generate and Publish M3U
 on:
   schedule:
     - cron: '0 15 * * *' # 每天下午3点运行
+  workflow_dispatch: # 添加这个触发器用于手动触发
 
 jobs:
   build:
@@ -22,8 +23,8 @@ jobs:
 
     - name: Commit and push changes
       run: |
-        git config --global user.name 'boleechat'
-        git config --global user.email 'bolee132@gmail.com'
+        git config --global user.name 'your-username'
+        git config --global user.email 'your-email@example.com'
         git add mytvfree.m3u
         git commit -m 'Update mytvfree.m3u'
         git push
