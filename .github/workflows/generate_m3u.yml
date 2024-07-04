@@ -21,8 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # 在此安装任何必要的Python依赖，例如：
-        # pip install some-package
+        pip install requests
 
     - name: Run Python script
       run: python createtvb.py
