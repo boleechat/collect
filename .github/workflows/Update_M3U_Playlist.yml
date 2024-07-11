@@ -1,4 +1,4 @@
-name: Update_M3U_Playlist
+name: Update M3U Playlist
 
 on:
   schedule:
@@ -15,23 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4  # 更新到最新版本
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4  # 更新到最新版本
         with:
-          node-version: '14'
+          node-version: '20'  # 指定使用 Node.js 20
 
       - name: Install dependencies
-        run: npm install node-fetch
+        run: npm install node-fetch@3  # 使用 node-fetch 的最新版本
 
       - name: Update M3U playlist
         env:
           PROXY_URL: ${{ secrets.PROXY_URL }}
           TEST_MODE: ${{ github.event.inputs.test_mode }}
         run: |
-          node <<EOF
-          const fetch = require('node-fetch');
+          node --experimental-modules <<EOF
+          import fetch from 'node-fetch';
+          import fs from 'fs';
 
           const SRC = [
             {
@@ -96,7 +97,7 @@ jobs:
           }
 
           fetchPlaylist().then(playlist => {
-            require('fs').writeFileSync('playlist.m3u', playlist);
+            fs.writeFileSync('playlist.m3u', playlist);
             console.log('Playlist updated successfully');
             if (process.env.TEST_MODE === 'true') {
               console.log('Test mode: Playlist content:');
@@ -119,7 +120,7 @@ jobs:
 
       - name: Upload playlist as artifact (Test mode)
         if: github.event.inputs.test_mode == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4  # 更新到最新版本
         with:
           name: playlist
           path: playlist.m3u
