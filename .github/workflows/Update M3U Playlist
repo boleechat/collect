@@ -1,0 +1,125 @@
+name: Update M3U Playlist
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时运行一次
+  workflow_dispatch:  # 添加手动触发器
+    inputs:
+      test_mode:
+        description: '运行测试模式'
+        required: false
+        default: 'false'
+
+jobs:
+  update-playlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install node-fetch
+
+      - name: Update M3U playlist
+        env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          TEST_MODE: ${{ github.event.inputs.test_mode }}
+        run: |
+          node <<EOF
+          const fetch = require('node-fetch');
+
+          const SRC = [
+            {
+              name: '央视频',
+              url: 'http://bolee.eu.org:56845/ysp.m3u'
+            },
+            {
+              name: 'MyTVSuper',
+              url: 'http://bolee.eu.org:56845/mytvsuper-tivimate.m3u',
+              mod: (noproxy) => noproxy ? identity : proxify
+            },
+            {
+              name: '四季',
+              url: 'http://bolee.eu.org:56845/4gtv.m3u',
+              mod: (noproxy) => noproxy ? identity : proxify
+            },
+            {
+              name: '油管',
+              url: 'http://bolee.eu.org:56845/youtube/list/你自己的YouTube播放列表',
+              mod: (noproxy) => noproxy ? identity : proxify
+            }
+          ];
+
+          const PROXY_DOMAINS = [
+            'http://bolee.eu.org',
+            '[^/]+\.hinet\.net',
+            '[^/]+\.litv\.4gtv',
+            '[^/]+\.litv\.litv',
+            '[^/]+\.4gtv\.',
+            '[^/]+\.googlevideo\.com',
+            '[^/]+\.tvb.com(:\d+)?'
+          ];
+
+          function identity(it) { return it; }
+
+          function proxify(it) {
+            for (const dom of PROXY_DOMAINS) {
+              it = it.replace(new RegExp('https?://' + dom, 'g'), process.env.PROXY_URL + '/$&');
+            }
+            return it;
+          }
+
+          async function fetchPlaylist() {
+            let text = `#EXTM3U
+          #EXTM3U x-tvg-url="https://assets.livednow.com/epg.xml"
+
+          `;
+            for (const src of SRC) {
+              console.log(`Fetching playlist from ${src.name}: ${src.url}`);
+              const response = await fetch(src.url);
+              let respText = await response.text();
+              console.log(`Received ${respText.length} bytes from ${src.name}`);
+              let channels = respText.split(/^#EXT/gm).map(it => '#EXT' + it).filter(it => it.startsWith('#EXTINF'));
+              console.log(`Found ${channels.length} channels in ${src.name}`);
+              if (src.mod) {
+                channels = channels.map(src.mod(false));
+                console.log(`Applied modification to ${src.name}`);
+              }
+              text += channels.join('\n');
+            }
+            return text;
+          }
+
+          fetchPlaylist().then(playlist => {
+            require('fs').writeFileSync('playlist.m3u', playlist);
+            console.log('Playlist updated successfully');
+            if (process.env.TEST_MODE === 'true') {
+              console.log('Test mode: Playlist content:');
+              console.log(playlist);
+            }
+          }).catch(error => {
+            console.error('Error updating playlist:', error);
+            process.exit(1);
+          });
+          EOF
+
+      - name: Deploy to GitHub Pages
+        if: github.event.inputs.test_mode != 'true'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          keep_files: true
+
+      - name: Upload playlist as artifact (Test mode)
+        if: github.event.inputs.test_mode == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: playlist
+          path: playlist.m3u
