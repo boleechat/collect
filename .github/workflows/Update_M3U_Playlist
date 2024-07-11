@@ -1,4 +1,4 @@
-name: Update M3U Playlist
+name: Update_M3U_Playlist
 
 on:
   schedule:
