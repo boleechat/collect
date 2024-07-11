@@ -27,7 +27,7 @@ jobs:
 
       - name: Create update script
         run: |
-          cat << EOF > update_playlist.mjs
+          cat << 'EOF' > update_playlist.mjs
           import fetch from 'node-fetch';
           import fs from 'fs';
 
@@ -55,12 +55,12 @@ jobs:
 
           const PROXY_DOMAINS = [
             'http://bolee.eu.org',
-            '[^/]+\.hinet\.net',
-            '[^/]+\.litv\.4gtv',
-            '[^/]+\.litv\.litv',
-            '[^/]+\.4gtv\.',
-            '[^/]+\.googlevideo\.com',
-            '[^/]+\.tvb.com(:\d+)?'
+            '[^/]+\\.hinet\\.net',
+            '[^/]+\\.litv\\.4gtv',
+            '[^/]+\\.litv\\.litv',
+            '[^/]+\\.4gtv\\.',
+            '[^/]+\\.googlevideo\\.com',
+            '[^/]+\\.tvb.com(:\\d+)?'
           ];
 
           function identity(it) { return it; }
