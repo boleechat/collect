@@ -1,0 +1,31 @@
+name: Generate fenghuang.m3u
+
+on:
+  schedule:
+    - cron: '30 6 * * *' # 每天早上6:30执行
+
+jobs:
+  generate-m3u:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Download live.m3u
+      run: curl -o live.m3u https://raw.githubusercontent.com/xiongjian83/TvBox/main/live.m3u
+
+    - name: Generate fenghuang.m3u
+      run: |
+        # 保留前3行
+        head -n 3 live.m3u > fenghuang.m3u
+        # 获取从凤凰到翡翠台的内容并拼接到文件中
+        sed -n '/#EXTINF:-1 tvg-id="1" tvg-name="凤凰"/,/#EXTINF:-1 tvg-id="1" tvg-name="翡翠台"/p' live.m3u >> fenghuang.m3u
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "ZDW@ZDW.com"
+        git config --local user.name "ZDW"
+        git add fenghuang.m3u
+        git commit -m "Update fenghuang.m3u"
+        git push
