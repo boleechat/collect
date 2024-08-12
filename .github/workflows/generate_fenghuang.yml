@@ -3,6 +3,7 @@ name: Generate fenghuang.m3u
 on:
   schedule:
     - cron: '30 6 * * *' # 每天早上6:30执行
+  workflow_dispatch: # 添加这个部分以便手动触发
 
 jobs:
   generate-m3u:
@@ -24,8 +25,8 @@ jobs:
 
     - name: Commit changes
       run: |
-        git config --local user.email "ZDW@ZDW.com"
-        git config --local user.name "ZDW"
+        git config --local user.email "you@example.com"
+        git config --local user.name "Your Name"
         git add fenghuang.m3u
         git commit -m "Update fenghuang.m3u"
         git push
