@@ -1,0 +1,35 @@
+name: Process M3U File
+
+on:
+  schedule:
+    - cron: '30 22 * * *'  # 这相当于北京时间每天早上 6:30
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  process-m3u:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Process M3U file
+      run: |
+        python .github/scripts/processfh_m3u.py
+
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add fh.m3u
+        git commit -m "Update fh.m3u" || exit 0
+        git push
