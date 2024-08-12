@@ -3,6 +3,7 @@ name: Convert Zubo Fofa
 on:
   schedule:
     - cron: '30 6 * * *'
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   build:
