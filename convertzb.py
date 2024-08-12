@@ -13,7 +13,8 @@ lines = response.text.splitlines()
 with open(output_file, 'w', encoding='utf-8') as f:
     f.write("#EXTM3U\n")
     for line in lines:
-        if ',' in line and line.startswith("http"):
+        if ',' in line:
             # 分割成频道名称和URL
-            name, url = line.split(',', 1)
-            f.write(f"#EXTINF:-1,{name.strip()}\n{url.strip()}\n")
+            name, url = line.rsplit(',', 1)
+            if url.strip().startswith("http"):
+                f.write(f"#EXTINF:-1,{name.strip()}\n{url.strip()}\n")
