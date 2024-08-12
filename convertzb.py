@@ -12,8 +12,8 @@ lines = response.text.splitlines()
 # 打开输出文件并写入M3U格式
 with open(output_file, 'w', encoding='utf-8') as f:
     f.write("#EXTM3U\n")
-    for i in range(0, len(lines), 2):
-        if i+1 < len(lines):
-            name = lines[i].split(',')[0].strip()
-            url = lines[i+1].strip()
-            f.write(f"#EXTINF:-1,{name}\n{url}\n")
+    for line in lines:
+        if ',' in line and line.startswith("http"):
+            # 分割成频道名称和URL
+            name, url = line.split(',', 1)
+            f.write(f"#EXTINF:-1,{name.strip()}\n{url.strip()}\n")
