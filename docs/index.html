@@ -176,12 +176,14 @@ proxies:
   #   # mtu: 1280
   #   remote-dns-resolve: true
   - name: sg3-zf
-    type: ss
-    server: 7fc17ab8-cf06-4a5e-8e9b-4bb4a1f91ded.niii.in
-    port: 15146
-    cipher: 2022-blake3-aes-256-gcm
+    type: vmess
+    server: 33596250-29a8-431e-af9e-5e731b9e3d0a.niii.in
+    port: 46201
+    uuid: 2018ef6e-e26b-4228-b77e-fe9f342b31f0
+    alterId: 0
+    cipher: none
     udp: true
-    password: "920//wkedB6rJx5Q5vbyCtJ0n+V6CXhWoA6opeGt0sQ=:uX1Vn1jZmw6vtH8Vsc8jZJ7IvAAXiv5BN6bF+yDZJqQ="
+    network: tcp    
   - name: sg3
     type: ss
     server: 2407:cdc0:d008::1000:2c1
@@ -214,32 +216,32 @@ proxies:
   #   # ip-version: ipv4
   - name: BANDWAGON-HK
     type: vless
-    server: 45.78.24.149
-    port: 58425
-    uuid: 98a5dcf9-0984-4534-bbc5-c4f7e2016db6
+    server: 45.78.30.28
+    port: 58426
+    uuid: c78961af-15ce-4c60-9fc1-e75527ed96a6
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: mirror.xtom.com.hk
+    servername: 588198.xyz
     reality-opts:
-      public-key: _cBEKp3AVOvJYiQRO359pSZN2ovXe6MCJ1F2BMs9TEc
-      short-id: 68ce96b5
-    client-fingerprint: firefox
+      public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
+      short-id: 9e524a66
+    client-fingerprint: chrome
   - name: BANDWAGON-DC6
     type: vless
     server: 80.251.212.72
     port: 53921
-    uuid: 98a5dcf9-0984-4534-bbc5-c4f7e2016db6
+    uuid: c78961af-15ce-4c60-9fc1-e75527ed96a6
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: mirror.xtom.us
+    servername: opencolo.mm.fcix.net
     reality-opts:
-      public-key: _cBEKp3AVOvJYiQRO359pSZN2ovXe6MCJ1F2BMs9TEc
-      short-id: 68ce96b5
-    client-fingerprint: safari
+      public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
+      short-id: 9e524a66
+    client-fingerprint: ios
   - name: TEMPPPPP
     type: ss
     server: 2401:b60:29::6fd1:dbe8
