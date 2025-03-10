@@ -1,0 +1,33 @@
+name: Update Passwall Subscription
+
+on:
+  schedule:
+    - cron: '30 6 * * *'  # 每天 UTC 时间 06:30 运行（北京时间 14:30）
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  update_subscription:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python 依赖
+        run: pip install pyyaml requests
+
+      - name: 下载 Clash 配置文件
+        run: |
+          curl -L -o cll2.yml http://zmm.300000.best
+          ls -lah  # 确保文件已下载
+
+      - name: 转换 Clash 配置为 Passwall 订阅
+        run: python convert_clash_to_passwall.py
+
+      - name: 提交更新
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add passwall_sub.txt
+          git commit -m "更新 Passwall 订阅 $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
