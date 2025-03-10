@@ -71,7 +71,7 @@ if response.status_code == 200:
             f.write(base64_sub)
         
         print(f"转换完成，请在 Passwall 订阅链接中填入：")
-        print(f"https://raw.githubusercontent.com/boleechat/collect/main/zmm")
+        print(f"https://raw.githubusercontent.com/boleechat/collect/main/zmm.txt")
     else:
         print("错误: YAML 文件中未找到 proxies 配置")
 else:
