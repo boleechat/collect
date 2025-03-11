@@ -5,7 +5,7 @@ import requests
 
 # 下载 Clash 配置文件
 url = "http://zmm.300000.best"
-output_file = "passwall_sub.txt"
+output_file = "zmm_sub.txt"
 
 def encode_base64(data: str) -> str:
     """Base64 编码"""
