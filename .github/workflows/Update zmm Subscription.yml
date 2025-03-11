@@ -26,8 +26,8 @@ jobs:
 
       - name: 提交更新
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "boleechat"
+          git config --global user.email "bolee132@gmail.com"
           git add zmm_sub.txt
-          git commit -m "更新 Passwall 订阅 $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "更新 zmm 订阅 $(date +'%Y-%m-%d %H:%M:%S')"
           git push
