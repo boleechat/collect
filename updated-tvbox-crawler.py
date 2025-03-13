@@ -1,0 +1,482 @@
+#!/usr/bin/env python3
+# coding=utf-8
+# by boleechat
+
+import json
+import sys
+import re
+import time
+from urllib.parse import urljoin, quote
+import requests
+from bs4 import BeautifulSoup
+sys.path.append('..')
+from base.spider import Spider
+
+
+class Spider(Spider):
+    def init(self, extend=""):
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
+        print("Btime initialized")
+        return
+
+    def getName(self):
+        return "Btime"
+
+    def isVideoFormat(self, url):
+        pass
+
+    def manualVideoCheck(self):
+        pass
+
+    def destroy(self):
+        pass
+
+    # Base URL for GitHub raw content
+    host = 'https://raw.githubusercontent.com'
+    base_url = 'https://raw.githubusercontent.com/boleechat/collect/refs/heads/main'
+    
+    # Year-based categories with corresponding HTML files
+    year_files = {
+        '2025': '2025-01-03.html',
+        '2024': '2024-01-12.html',
+        '2023': '2023-01-12.html',
+        '2022': '2022-01-12.html',
+        '2021': '2021-01-12.html',
+        '2020': '2020-01-12.html',
+        '2019': '2019-01-12.html',
+        '2018': '2018-01-12.html'
+    }
+    
+    # Default year to use
+    current_year = '2025'
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+    }
+
+    def homeContent(self, filter):
+        """Generate content for home page with year-based categories"""
+        result = {}
+        
+        # Create year-based categories
+        classes = [{'type_name': year, 'type_id': year} for year in self.year_files.keys()]
+        
+        # No filters for now, could be expanded later
+        filters = {}
+        
+        result['class'] = classes
+        result['filters'] = filters
+        return result
+    
+    def homeVideoContent(self):
+        """Get videos for the home page (using the most recent year)"""
+        # Use default year for home page
+        html = self.fetchSourceData(self.current_year)
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Extract featured videos
+        videos = self.extractVideos(soup, limit=30)
+        
+        return {'list': videos}
+    
+    def categoryContent(self, tid, pg, filter, extend):
+        """Get videos for a specific year category"""
+        if pg == '1':  # First page
+            self.currentPg = 1
+        else:
+            self.currentPg = int(pg)
+        
+        # Verify the tid is a valid year
+        if tid not in self.year_files:
+            tid = self.current_year
+            
+        # Fetch data for the selected year
+        html = self.fetchSourceData(tid)
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Extract videos
+        all_videos = self.extractVideos(soup, limit=100)
+        
+        # Implement pagination
+        videos_per_page = 20
+        start_idx = (self.currentPg - 1) * videos_per_page
+        end_idx = start_idx + videos_per_page
+        
+        # Calculate total pages
+        total_pages = max(1, (len(all_videos) + videos_per_page - 1) // videos_per_page)
+        
+        result = {
+            'list': all_videos[start_idx:end_idx],
+            'page': pg,
+            'pagecount': total_pages,
+            'limit': videos_per_page,
+            'total': len(all_videos)
+        }
+        
+        return result
+    
+    def detailContent(self, ids):
+        """Get details for a specific video"""
+        if not ids:
+            return {'list': []}
+        
+        vid = ids[0]
+        
+        # Parse the year from the video ID if possible
+        year = self.extract_year_from_id(vid)
+        if not year:
+            year = self.current_year
+            
+        html = self.fetchSourceData(year)
+        
+        # Find the specific video info
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # Try to find the video by ID in all links
+        links = soup.find_all('a', href=lambda href: href and vid in href)
+        
+        if not links:
+            # Fallback to search by id substring
+            links = soup.find_all('a', href=lambda href: href and self.extract_id_from_url(href) == vid)
+        
+        if not links:
+            return {'list': [{'vod_name': '未找到视频', 'vod_play_from': 'Btime', 'vod_play_url': '未找到$' + vid}]}
+        
+        link = links[0]
+        list_item = link.find_parent('li')
+        
+        title = link.get_text(strip=True)
+        if not title:
+            title_elem = link.find(['h3', 'h4', 'div', 'span'])
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            else:
+                title = f"视频 {vid}"
+        
+        # Try to find a description
+        desc = ""
+        if list_item:
+            # Try to extract text that follows the link but isn't part of another element
+            for content in list_item.contents:
+                if isinstance(content, str) and content.strip():
+                    desc += content.strip() + " "
+        
+        if not desc:
+            # Try other methods to find description
+            desc_elem = link.find_next(['p', 'div'], class_=lambda x: x and ('desc' in x or 'info' in x))
+            if desc_elem:
+                desc = desc_elem.get_text(strip=True)
+        
+        # Try to find more information
+        info = {}
+        
+        # Use the year from the category
+        info['year'] = year
+        
+        # Create play URL
+        play_url = f"{title}${link['href']}"
+        
+        vod = {
+            'vod_id': vid,
+            'vod_name': title,
+            'vod_pic': '',
+            'vod_year': info.get('year', ''),
+            'vod_area': '',
+            'vod_remarks': '',
+            'vod_actor': info.get('actor', ''),
+            'vod_director': info.get('director', ''),
+            'vod_content': desc,
+            'vod_play_from': 'Btime',
+            'vod_play_url': play_url
+        }
+        
+        # Try to find image
+        img_url = ''
+        if list_item:
+            img_elem = list_item.find('img')
+            if img_elem:
+                if img_elem.has_attr('src'):
+                    img_url = img_elem['src']
+                elif img_elem.has_attr('data-src'):
+                    img_url = img_elem['data-src']
+        
+        if not img_url:
+            img_elem = link.find('img')
+            if img_elem:
+                if img_elem.has_attr('src'):
+                    img_url = img_elem['src']
+                elif img_elem.has_attr('data-src'):
+                    img_url = img_elem['data-src']
+                    
+        # If still no image, look for img tag near the link
+        if not img_url:
+            if list_item:
+                next_img = list_item.find_next('img')
+                if next_img and next_img.has_attr('src'):
+                    img_url = next_img['src']
+        
+        vod['vod_pic'] = img_url
+        
+        return {'list': [vod]}
+    
+    def searchContent(self, key, quick, pg="1"):
+        """Search for videos by keyword across all years"""
+        results = []
+        
+        # Search in each year's data
+        for year in self.year_files.keys():
+            html = self.fetchSourceData(year)
+            soup = BeautifulSoup(html, 'html.parser')
+            
+            # Find all elements that might contain the search term
+            elements = soup.find_all(text=lambda text: text and key in text)
+            
+            for elem in elements:
+                # Find the parent link or container
+                link = elem.find_parent('a')
+                if not link:
+                    continue
+                    
+                if not link.has_attr('href'):
+                    continue
+                
+                # Extract video ID
+                video_id = self.extract_id_from_url(link['href'])
+                if not video_id:
+                    continue
+                
+                # Add year information to the video ID to help with later lookups
+                video_id = f"{year}_{video_id}"
+                    
+                # Get title
+                title = elem.get_text(strip=True)
+                if not title:
+                    title_elem = link.find(['h3', 'h4', 'div', 'span'])
+                    if title_elem:
+                        title = title_elem.get_text(strip=True)
+                    else:
+                        title = f"视频 {video_id}"
+                
+                # Find image
+                img_elem = link.find('img')
+                img_url = ''
+                if img_elem and img_elem.has_attr('src'):
+                    img_url = img_elem['src']
+                elif img_elem and img_elem.has_attr('data-src'):
+                    img_url = img_elem['data-src']
+                
+                # Find description
+                desc_elem = link.find_next(['p', 'div'], class_=lambda x: x and ('desc' in x or 'info' in x))
+                desc = desc_elem.get_text(strip=True) if desc_elem else ''
+                
+                # Avoid duplicates
+                if not any(r['vod_id'] == video_id for r in results):
+                    results.append({
+                        'vod_id': video_id,
+                        'vod_name': title,
+                        'vod_pic': img_url,
+                        'vod_remarks': f"{year}年",
+                        'vod_year': year
+                    })
+        
+        return {'list': results, 'page': pg, 'pagecount': 1, 'limit': 50, 'total': len(results)}
+    
+    def playerContent(self, flag, id, vipFlags):
+        """Get playback information"""
+        return {'parse': 1, 'url': id, 'header': ''}
+    
+    def localProxy(self, param):
+        return param
+    
+    # Helper methods
+    def fetchSourceData(self, year=None):
+        """Fetch the source data for a specific year"""
+        if not year or year not in self.year_files:
+            year = self.current_year
+            
+        # Build the source URL for the specified year
+        source_url = f"{self.base_url}/{self.year_files[year]}"
+        
+        try:
+            response = self.session.get(source_url, headers=self.headers)
+            response.raise_for_status()
+            return response.text
+        except Exception as e:
+            print(f"Error fetching source data for {year}: {e}")
+            return ""
+    
+    def extractVideos(self, soup, limit=None):
+        """Extract videos from the HTML content"""
+        videos = []
+        
+        # First try to extract from list items
+        list_items = soup.find_all('li')
+        for item in list_items:
+            link = item.find('a', href=True)
+            if link:
+                # Extract videos from list item
+                item_videos = self.extractVideosFromListItem(item)
+                videos.extend(item_videos)
+                
+                if limit and len(videos) >= limit:
+                    break
+        
+        # If not enough videos found, look for links directly
+        if not videos or (limit and len(videos) < limit):
+            # Find all links that might be videos
+            links = soup.find_all('a', href=True)
+            
+            for link in links:
+                # Skip links without href or those that are likely navigation
+                if not link['href'] or '#' in link['href'] or 'javascript:' in link['href']:
+                    continue
+                    
+                # If we already have this link from list items, skip
+                video_id = self.extract_id_from_url(link['href'])
+                if video_id and any(v['vod_id'] == video_id for v in videos):
+                    continue
+                
+                # Extract video from link
+                video = self.extractVideoFromLink(link)
+                if video:
+                    videos.append(video)
+                
+                if limit and len(videos) >= limit:
+                    break
+        
+        return videos
+    
+    def extractVideosFromListItem(self, list_item):
+        """Extract video information from a list item element"""
+        videos = []
+        
+        # Find the link
+        link = list_item.find('a', href=True)
+        if not link:
+            return videos
+            
+        # Extract video ID
+        video_id = self.extract_id_from_url(link['href'])
+        if not video_id:
+            return videos
+            
+        # Get title
+        title = link.get_text(strip=True)
+        if not title:
+            title_elem = link.find(['h3', 'h4', 'div', 'span'])
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            else:
+                return videos  # Skip items without title
+        
+        # Find image
+        img_elem = list_item.find('img')
+        img_url = ''
+        if img_elem:
+            if img_elem.has_attr('src'):
+                img_url = img_elem['src']
+            elif img_elem.has_attr('data-src'):
+                img_url = img_elem['data-src']
+        
+        # Extract date if available
+        date_text = ''
+        date_match = re.search(r'(\d{4})年(\d{1,2})月(\d{1,2})日', list_item.get_text())
+        if date_match:
+            date_text = f"{date_match.group(1)}-{date_match.group(2)}-{date_match.group(3)}"
+        
+        # Create video object
+        videos.append({
+            'vod_id': video_id,
+            'vod_name': title,
+            'vod_pic': img_url,
+            'vod_remarks': date_text,
+            'vod_year': date_match.group(1) if date_match else time.strftime("%Y", time.localtime())
+        })
+        
+        return videos
+    
+    def extractVideoFromLink(self, link):
+        """Extract video information from a link element"""
+        if not link.has_attr('href'):
+            return None
+            
+        # Extract video ID
+        video_id = self.extract_id_from_url(link['href'])
+        if not video_id:
+            return None
+            
+        # Get title
+        title = link.get_text(strip=True)
+        if not title:
+            title_elem = link.find(['h3', 'h4', 'div', 'span'])
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            else:
+                return None  # Skip items without title
+        
+        # Find image
+        img_elem = link.find('img')
+        img_url = ''
+        if img_elem:
+            if img_elem.has_attr('src'):
+                img_url = img_elem['src']
+            elif img_elem.has_attr('data-src'):
+                img_url = img_elem['data-src']
+                
+        # If no image in link, look for nearby img
+        if not img_url:
+            parent = link.parent
+            if parent:
+                img_elem = parent.find('img')
+                if img_elem and img_elem.has_attr('src'):
+                    img_url = img_elem['src']
+        
+        # Extract date if available
+        date_text = ''
+        parent_text = link.parent.get_text() if link.parent else ''
+        date_match = re.search(r'(\d{4})年(\d{1,2})月(\d{1,2})日', parent_text)
+        if date_match:
+            date_text = f"{date_match.group(1)}-{date_match.group(2)}-{date_match.group(3)}"
+        
+        # Create video object
+        return {
+            'vod_id': video_id,
+            'vod_name': title,
+            'vod_pic': img_url,
+            'vod_remarks': date_text,
+            'vod_year': date_match.group(1) if date_match else time.strftime("%Y", time.localtime())
+        }
+    
+    def extract_id_from_url(self, url):
+        """Extract a unique ID from a URL"""
+        # Try to find common patterns for video IDs
+        patterns = [
+            r'/([a-zA-Z0-9_-]+)\.html$',
+            r'id=([a-zA-Z0-9_-]+)',
+            r'/([a-zA-Z0-9_-]+)/$',
+            r'video/([a-zA-Z0-9_-]+)',
+            r'item\.btime\.com/([a-zA-Z0-9]+)',
+            r'item\.btime\.com.*?([a-zA-Z0-9]{32})'
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, url)
+            if match:
+                return match.group(1)
+        
+        # If no pattern matches, use the whole URL as a hash
+        import hashlib
+        return hashlib.md5(url.encode()).hexdigest()
+        
+    def extract_year_from_id(self, video_id):
+        """Extract year information from a video ID (if it was added during search)"""
+        if '_' in video_id:
+            parts = video_id.split('_', 1)
+            if parts[0] in self.year_files:
+                return parts[0]
+        return None
