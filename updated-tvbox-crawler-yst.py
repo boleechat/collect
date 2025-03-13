@@ -38,14 +38,14 @@ class Spider(Spider):
     
     # Year-based categories with corresponding HTML files
     year_files = {
-        '2025': '2025-01-03.html',
-        '2024': '2024-01-12.html',
-        '2023': '2023-01-12.html',
-        '2022': '2022-01-12.html',
-        '2021': '2021-01-12.html',
-        '2020': '2020-01-12.html',
-        '2019': '2019-01-12.html',
-        '2018': '2018-01-12.html'
+        '2025': 'yst2025-01-03.html',
+        '2024': 'yst2024-01-12.html',
+        '2023': 'yst2023-01-12.html',
+        '2022': 'yst2022-01-12.html',
+        '2021': 'yst2021-01-12.html',
+        '2020': 'yst2020-01-12.html',
+        '2019': 'yst2019-01-12.html',
+        '2018': 'yst2018-01-12.html'
     }
     
     # Default year to use
