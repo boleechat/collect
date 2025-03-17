@@ -1,4 +1,4 @@
-name: Update Passwall Subscription
+name: Update zmm Subscription
 
 on:
   schedule:
@@ -28,6 +28,6 @@ jobs:
         run: |
           git config --global user.name "boleechat"
           git config --global user.email "bolee132@gmail.com"
-          git add cll2.yml passwall_sub.txt
+          git add cll2.yml zmm_sub.txt
           git commit -m "更新 Passwall 订阅 $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
