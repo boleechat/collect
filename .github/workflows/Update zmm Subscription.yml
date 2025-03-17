@@ -1,4 +1,4 @@
-name: Update zmm Subscription
+name: Update Passwall Subscription
 
 on:
   schedule:
@@ -21,13 +21,13 @@ jobs:
           curl -L -o cll2.yml http://zmm.300000.best
           ls -lah  # 确保文件已下载
 
-      - name: 转换 Clash 配置为 Zmm 订阅
+      - name: 转换 Clash 配置为 Passwall 订阅
         run: python convert_to_zmm.py
 
       - name: 提交更新
         run: |
           git config --global user.name "boleechat"
           git config --global user.email "bolee132@gmail.com"
-          git add cll2.yml zmm_sub.txt
-          git commit -m "更新 zmm 订阅 $(date +'%Y-%m-%d %H:%M:%S')"
+          git add cll2.yml passwall_sub.txt
+          git commit -m "更新 Passwall 订阅 $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
