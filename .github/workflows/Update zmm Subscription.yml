@@ -18,7 +18,7 @@ jobs:
 
       - name: 下载 Clash 配置文件
         run: |
-          curl -L -o cll2.yml "http://zmm.300000.best" --no-cache
+          curl -L -o cll2.yml -H "Cache-Control: no-cache, no-store, must-revalidate" -H "Pragma: no-cache" "http://zmm.300000.best"
           ls -lah  # 确保文件已下载
 
       - name: 转换 Clash 配置为 Passwall 订阅
