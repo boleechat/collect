@@ -404,20 +404,20 @@ proxies:
     client-fingerprint: random
     # fingerprint: xxxx
     # skip-cert-verify: true
-  # - name: YXVM-HKK
-  #   type: vless
-  #   server: 178.173.237.142
-  #   port: 25252
-  #   uuid: 50492e13-b0dd-4937-e5ab-d667aa88dd31
-  #   network: tcp
-  #   tls: true
-  #   udp: true
-  #   flow: xtls-rprx-vision
-  #   # servername: www.amd.com
-  #   reality-opts:
-  #     public-key: sueNfZvdLVkXv-RCezG7TwEBSlWVJvHmI4SnpvI-yAg
-  #     short-id: ec26cb3e78
-  #   client-fingerprint: firefox
+  - name: NigerliaNN
+    type: vless
+    server: claw99.aloofly.eu
+    port: 38908
+    uuid: b868be07-e524-49e5-9c0b-b0bd15333cdd
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amd.com
+    reality-opts:
+      public-key: 6izR9t5i-G_FvEzP7hD0pI5wnQiCESri6FmS5u0MUyQ
+      short-id: 3d
+    client-fingerprint: random
   # - name: YXVM-HKK
   #   type: vless
   #   server: yxvm-hk.aloofly.eu
@@ -707,7 +707,7 @@ proxy-groups:
       - Lan proxy
       
       - TEMPPPPP
-      
+      - NigerliaNN
       
       
       - YXVM-HKK
@@ -744,7 +744,7 @@ proxy-groups:
       - Lan Proxy(L)
       - Lan proxy
       - SG-L
-      - nr
+      - NigerliaNN
       
       - Relay-YXVM-SG3
       - YXVM-HKK
