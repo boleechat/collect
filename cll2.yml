@@ -500,7 +500,7 @@ proxy-groups:
       - randomGL
       - Gdrive
       - akile-us4837
-      - DMIT39
+      
       
       - sg3-zf
       - YXVM-HKK
@@ -550,7 +550,7 @@ proxy-groups:
       - SG-L
       - Lan Proxy(L)
       - Lan proxy
-      - DMIT39
+      
       - US-BWGDC01
       - TEMPPPPP
       
@@ -602,7 +602,7 @@ proxy-groups:
       - SG-L
       - Lan Proxy(L)
       - Lan proxy
-      - DMIT39
+      
       
       
       
@@ -650,7 +650,7 @@ proxy-groups:
       
       - HK-L
       - SG-L
-      - DMIT39
+      
       
       
       
@@ -785,7 +785,7 @@ proxy-groups:
       
       - HK-L
       - SG-L
-      - DMIT39
+      
       - YXVM-HKK
       - sg3
       - sg3-zf
@@ -834,7 +834,7 @@ proxy-groups:
       
       - USA-L
       
-      - DMIT39
+      
       - SG-L
       
       - sg3
@@ -864,7 +864,7 @@ proxy-groups:
       
       - HK-L
       - SG-L
-      - DMIT39
+      
       
       
       
@@ -893,7 +893,7 @@ proxy-groups:
       - US-BWGDC01
       - HK-L
       - YXVM-HKK
-      - DMIT39
+      
       - CLAW9909
       - CLAW2
       - SJC-1
@@ -912,7 +912,7 @@ proxy-groups:
       - USS-HOME-O
       - akile-us4837
       - SJC-1
-      - DMIT39
+      
     type: select
   - name: Reject
     proxies:
@@ -976,7 +976,7 @@ proxy-groups:
   - name: USA-L
     proxies:
       - US-BWGDC01
-      - DMIT39
+      
       - SJC-1
       
     type: load-balance
