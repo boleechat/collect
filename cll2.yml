@@ -57,7 +57,7 @@ proxies:
     obfs-param: 20176-L1juani984.download.microsoft.com
     # protocol-param: "#"
     # udp: true
-  # - name: JP-WIKI
+  # - name: TEMP2222
   #   type: vless
   #   server: 103.151.40.23
   #   port: 54645
@@ -70,23 +70,23 @@ proxies:
   #   client-fingerprint: chrome
   #   # servername: www.amd.com
   #   grpc-opts:
-  #     grpc-service-name: "jp-wiki.aloofly.eu"
+  #     grpc-service-name: "TEMP2222.aloofly.eu"
   #   reality-opts:
   #     public-key: dH-lrTUoVVbjVjna5YNYR_Ljou3iiwt9nrt7-F3yoC0
   #     short-id: 13bf6fac
-  - name: JP-WIKI
+  - name: TEMP2222
     type: vless
-    server: 103.151.40.23
-    port: 19693
-    uuid: 8d057659-97a8-4b4e-a022-cfe9cad998a4
+    server: 46.232.104.127
+    port: 40125
+    uuid: 8021447d-9c30-4399-adb4-652cfb291011
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    # servername: www.amazon.com
+    servername: www.amd.com
     reality-opts:
-      public-key: HioY8zwy1VY_9DVjPi415d4NWxKx2DgJS7_HwscTOBw
-      short-id: e1faa1
+      public-key: pRIVi-fDerjrDppQ-C8O8mgoYNqCqxaEX4VBxAwCAyQ
+      # short-id: e1faa1
     client-fingerprint: chrome
   - name: JP222222
     type: vless
@@ -130,7 +130,7 @@ proxies:
       public-key: 9yWheKzHOIQASgN4sU_G-4zuthAdWKRBL_1ZNdF2kQY
       short-id: 6fca54e9
     client-fingerprint: edge
-  # - name: cf-wg-jp-wiki
+  # - name: cf-wg-TEMP2222
   #   type: wireguard
   #   server: 2a12:f8c1:55:df16::1
   #   port: 19201
@@ -531,7 +531,7 @@ proxy-groups:
       
       
       
-      - JP-WIKI
+      - TEMP2222
       
       
       
@@ -572,7 +572,7 @@ proxy-groups:
       
       
       
-      - JP-WIKI
+      - TEMP2222
       - sg3
       - sg3-zf
       
@@ -623,7 +623,7 @@ proxy-groups:
       
       
       
-      - JP-WIKI
+      - TEMP2222
       - sg3
       - sg3-zf
       
@@ -666,7 +666,7 @@ proxy-groups:
       - SJC-1
       
       
-      - JP-WIKI
+      - TEMP2222
       - sg3
       - sg3-zf
       
@@ -721,7 +721,7 @@ proxy-groups:
       - SJC-1
       
       
-      - JP-WIKI
+      - TEMP2222
       - sg3
       
       - sg3-zf
@@ -772,7 +772,7 @@ proxy-groups:
       - YXVM-HKK
       - sg3
       - sg3-zf
-      - JP-WIKI
+      - TEMP2222
       
       - DIRECT
     type: select
@@ -813,7 +813,7 @@ proxy-groups:
       - SJC-1
       
       
-      - JP-WIKI
+      - TEMP2222
       
       
       
@@ -850,7 +850,7 @@ proxy-groups:
       
       - Relay-YXVM-SG3
       - SJC-1
-      - JP-WIKI
+      - TEMP2222
       
       
       - DIRECT
@@ -871,7 +871,7 @@ proxy-groups:
       - Lan Proxy(L)
       - Lan proxy
       - SJC-1
-      - JP-WIKI
+      - TEMP2222
       
       
       - DIRECT
@@ -964,7 +964,7 @@ proxy-groups:
     udp: true
     proxies:
       
-      - JP-WIKI
+      - TEMP2222
       - sg3
   - name: USS-2ISP-F
     type: fallback
