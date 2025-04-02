@@ -57,36 +57,19 @@ proxies:
     obfs-param: 20176-L1juani984.download.microsoft.com
     # protocol-param: "#"
     # udp: true
-  # - name: TEMP2222
-  #   type: vless
-  #   server: 103.151.40.23
-  #   port: 54645
-  #   uuid: 7881efba-e3f9-4330-ced8-daed0b8dba2f
-  #   network: grpc
-  #   tls: true
-  #   udp: true
-  #   flow: 
-  #   # skip-cert-verify: true
-  #   client-fingerprint: chrome
-  #   # servername: www.amd.com
-  #   grpc-opts:
-  #     grpc-service-name: "TEMP2222.aloofly.eu"
-  #   reality-opts:
-  #     public-key: dH-lrTUoVVbjVjna5YNYR_Ljou3iiwt9nrt7-F3yoC0
-  #     short-id: 13bf6fac
-  - name: TEMP2222
+  - name: HKHEN0402
     type: vless
     server: 46.232.104.127
-    port: 40125
-    uuid: 8021447d-9c30-4399-adb4-652cfb291011
+    port: 32541
+    uuid: c78961af-15ce-4c60-9fc1-e75527ed96a6
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: www.amd.com
+    servername: 588198.xyz
     reality-opts:
-      public-key: pRIVi-fDerjrDppQ-C8O8mgoYNqCqxaEX4VBxAwCAyQ
-      # short-id: e1faa1
+      public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
+      short-id: 9e524a66
     client-fingerprint: chrome
   - name: JP222222
     type: vless
@@ -130,21 +113,6 @@ proxies:
       public-key: 9yWheKzHOIQASgN4sU_G-4zuthAdWKRBL_1ZNdF2kQY
       short-id: 6fca54e9
     client-fingerprint: edge
-  # - name: cf-wg-TEMP2222
-  #   type: wireguard
-  #   server: 2a12:f8c1:55:df16::1
-  #   port: 19201
-  #   ip: 172.16.0.2
-  #   ipv6: 2606:4700:110:86e4:ce04:f854:8e4b:cec7
-  #   public-key: bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
-  #   private-key: iC71mDTRNNT3sEiAjQ9ZgXcU+JWj2Ap/AoOS4j/WCE4=
-  #   udp: true
-  #   dns:
-  #     - 8.8.8.8
-  #     - 1.0.0.1
-  #     - 2001:4860:4860::8844
-  #   mtu: 1280
-  #   remote-dns-resolve: true
   - name: iepl-warp
     type: wireguard
     server: sh-iepl2.gorelay.xyz
@@ -406,18 +374,18 @@ proxies:
     # skip-cert-verify: true
   - name: NigerliaNN
     type: vless
-    server: claw99.aloofly.eu
-    port: 38908
-    uuid: b868be07-e524-49e5-9c0b-b0bd15333cdd
+    server: yxvm-hk.aloofly.eu
+    port: 45292
+    uuid: e6a04651-5d94-4489-baf2-771b9f4da450
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: www.amd.com
+    servername: n2.022888.xyz
     reality-opts:
-      public-key: 6izR9t5i-G_FvEzP7hD0pI5wnQiCESri6FmS5u0MUyQ
-      short-id: 3d
-    client-fingerprint: random
+      public-key: fzG626cy5WYhdmWDY8aLwhJ30_vhj7cQLnRauO9WK2k
+      short-id: 08be
+    client-fingerprint: chrome
   # - name: YXVM-HKK
   #   type: vless
   #   server: yxvm-hk.aloofly.eu
@@ -531,7 +499,7 @@ proxy-groups:
       
       
       
-      - TEMP2222
+      - HKHEN0402
       
       
       
@@ -572,7 +540,7 @@ proxy-groups:
       
       
       
-      - TEMP2222
+      - HKHEN0402
       - sg3
       - sg3-zf
       
@@ -623,7 +591,7 @@ proxy-groups:
       
       
       
-      - TEMP2222
+      - HKHEN0402
       - sg3
       - sg3-zf
       
@@ -666,7 +634,7 @@ proxy-groups:
       - SJC-1
       
       
-      - TEMP2222
+      - HKHEN0402
       - sg3
       - sg3-zf
       
@@ -701,7 +669,7 @@ proxy-groups:
       - USA-L
       
       - HK-L
-      - Relay-JP-SG3
+      
       - USS-2ISP-F
       - Lan Proxy(L)
       - Lan proxy
@@ -721,7 +689,7 @@ proxy-groups:
       - SJC-1
       
       
-      - TEMP2222
+      - HKHEN0402
       - sg3
       
       - sg3-zf
@@ -772,7 +740,7 @@ proxy-groups:
       - YXVM-HKK
       - sg3
       - sg3-zf
-      - TEMP2222
+      - HKHEN0402
       
       - DIRECT
     type: select
@@ -813,7 +781,7 @@ proxy-groups:
       - SJC-1
       
       
-      - TEMP2222
+      - HKHEN0402
       
       
       
@@ -850,7 +818,7 @@ proxy-groups:
       
       - Relay-YXVM-SG3
       - SJC-1
-      - TEMP2222
+      - HKHEN0402
       
       
       - DIRECT
@@ -871,7 +839,7 @@ proxy-groups:
       - Lan Proxy(L)
       - Lan proxy
       - SJC-1
-      - TEMP2222
+      - HKHEN0402
       
       
       - DIRECT
@@ -958,13 +926,6 @@ proxy-groups:
     udp: true
     proxies:
       - YXVM-HKK
-      - sg3
-  - name: Relay-JP-SG3
-    type: relay
-    udp: true
-    proxies:
-      
-      - TEMP2222
       - sg3
   - name: USS-2ISP-F
     type: fallback
