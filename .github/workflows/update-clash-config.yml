@@ -242,17 +242,50 @@ jobs:
           EOF
 
       - name: Commit and Push Changes
+        env:
+          OUTPUT_FILE_NAME: cll2.yml # Make sure this matches the Python script
         run: |
-          git config --global user.name 'boleechat'
-          git config --global user.email 'bolee132@gmail.com'
-          # Check if there are changes
-          if git diff --quiet ${{ env.OUTPUT_FILE_NAME }}; then
-            echo "No changes detected in ${{ env.OUTPUT_FILE_NAME }}. Nothing to commit."
-            exit 0
+          echo "--- Listing files after Python script ---"
+          ls -l # Add this line to see if cll2.yml exists and its size
+
+          # Original Git commands follow...
+          git config --global user.name 'github-actions[bot]' # Changed back to bot user for consistency
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          echo "--- Git Status Before Add ---"
+          git status
+
+          # Verify the file exists explicitly before trying git diff
+          if [ ! -f "${{ env.OUTPUT_FILE_NAME }}" ]; then
+            echo "Error: Output file ${{ env.OUTPUT_FILE_NAME }} not found! Python script likely failed to save it here."
+            exit 1
           fi
+
+          # Check specifically if the target file has changed compared to the repo HEAD
+          # Use 'git diff --quiet HEAD -- ${{ env.OUTPUT_FILE_NAME }}' for a more precise check
+          if git diff --quiet HEAD -- ${{ env.OUTPUT_FILE_NAME }}; then
+            echo "No changes detected in ${{ env.OUTPUT_FILE_NAME }} compared to the last commit. Nothing to commit."
+            exit 0 # Exit cleanly, no update needed
+          else
+             echo "Changes detected in ${{ env.OUTPUT_FILE_NAME }}."
+          fi
+
+          echo "Adding file: ${{ env.OUTPUT_FILE_NAME }}"
           git add ${{ env.OUTPUT_FILE_NAME }}
+
+          echo "--- Git Status After Add ---"
+          git status # Verify if the file is staged now
+
+          # Double-check staging before commit
+          if git diff --staged --quiet; then
+            echo "Error: File was detected as changed, but 'git add' failed to stage it. Check permissions or .gitignore?"
+            exit 1
+          fi
+
+          echo "Committing changes..."
           git commit -m "Automated Clash config update ($(date +'%Y-%m-%d %H:%M:%S UTC'))"
-          # Retry push in case of minor conflicts or delays
+
+          echo "Pushing changes..."
           attempt=1
           while ! git push; do
             if [ $attempt -ge 3 ]; then
@@ -262,6 +295,7 @@ jobs:
             echo "Push failed. Retrying in 5 seconds... (Attempt $((attempt+1)))"
             attempt=$((attempt+1))
             sleep 5
-            git pull --rebase # Try to pull potential changes before pushing again
+            git fetch origin ${{ github.ref_name }}
+            git rebase origin/${{ github.ref_name }}
           done
           echo "Changes committed and pushed successfully."
