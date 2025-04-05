@@ -1,0 +1,267 @@
+name: Update Clash Config
+
+on:
+  workflow_dispatch: # Allow manual trigger
+  schedule:
+    - cron: '0 3 * * *' # Run daily at 3 AM UTC
+
+permissions:
+  contents: write # Allow workflow to commit changes
+
+jobs:
+  update_config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: python -m pip install requests PyYAML
+
+      - name: Fetch, Process, and Update Config
+        env:
+          SOURCE_URL: http://zmm.300000.best/cll2.yml # URL of the source file (adjust if needed)
+          OUTPUT_FILE_NAME: cll2.yml # Name of the final file in the repo
+          RULES_FILE_NAME: clashrules.txt # Name of your custom rules file in the repo
+          PLACEHOLDER_PROXY: '🇨🇳 台湾节点' # The placeholder to replace in clashrules.txt
+        run: |
+          python << 'EOF'
+          import os
+          import requests
+          import yaml
+          import time
+          import sys
+          from concurrent.futures import ThreadPoolExecutor, as_completed
+
+          SOURCE_URL = os.environ['SOURCE_URL']
+          OUTPUT_FILE_NAME = os.environ['OUTPUT_FILE_NAME']
+          RULES_FILE_NAME = os.environ['RULES_FILE_NAME']
+          PLACEHOLDER_PROXY = os.environ['PLACEHOLDER_PROXY']
+
+          # --- Configuration ---
+          # Proxies/Groups to test (Must exist in the downloaded cll2.yml)
+          SG_CANDIDATES = ['sg3', 'sg3-zf', 'SG-L'] # Relay-YXVM-SG3 is harder to test directly
+          DEFAULT_TEST_URL = 'https://cp.cloudflare.com/generate_204'
+          TEST_TIMEOUT = 5 # seconds for latency test request
+          # --- End Configuration ---
+
+          def fetch_content(url):
+              print(f"Fetching content from {url}...")
+              try:
+                  response = requests.get(url, timeout=15)
+                  response.raise_for_status() # Raise error for bad status codes
+                  print("Fetch successful.")
+                  return response.text, response.content
+              except requests.exceptions.RequestException as e:
+                  print(f"Error fetching {url}: {e}")
+                  sys.exit(1)
+
+          def get_latency(proxy_name, test_url):
+              """Tests latency by making a request to the test_url. Returns latency in ms or float('inf')."""
+              start_time = time.time()
+              try:
+                  response = requests.get(test_url, timeout=TEST_TIMEOUT)
+                  response.raise_for_status()
+                  # Check if the response seems valid (e.g., expected status code)
+                  if response.status_code >= 200 and response.status_code < 300:
+                      latency = (time.time() - start_time) * 1000
+                      print(f"Latency for {proxy_name} ({test_url}): {latency:.2f} ms")
+                      return latency
+                  else:
+                      print(f"Unexpected status code {response.status_code} for {proxy_name} ({test_url})")
+                      return float('inf')
+              except requests.exceptions.Timeout:
+                  print(f"Timeout testing {proxy_name} ({test_url})")
+                  return float('inf')
+              except requests.exceptions.RequestException as e:
+                  print(f"Error testing {proxy_name} ({test_url}): {e}")
+                  return float('inf')
+
+          def find_fastest_proxy(proxies_data, groups_data, candidates):
+              """Finds the fastest proxy/group from the candidates list."""
+              print("\n--- Starting Latency Tests ---")
+              results = {}
+              test_tasks = {}
+
+              all_proxies = {p['name']: p for p in proxies_data}
+              all_groups = {g['name']: g for g in groups_data}
+
+              with ThreadPoolExecutor(max_workers=len(candidates)) as executor:
+                  futures = {}
+                  for name in candidates:
+                      test_url = None
+                      if name in all_proxies:
+                          # Simple proxy - needs a default test URL or logic to derive one (not implemented here)
+                          # For simplicity, we rely on groups having test URLs or testing named proxies mentioned in groups
+                          print(f"Note: Direct latency test for individual proxy '{name}' not implemented without a specific test URL. Skipping direct test.")
+                          # test_url = DEFAULT_TEST_URL # Or add logic if individual proxies have test URLs
+                      elif name in all_groups:
+                          group = all_groups[name]
+                          # Check if the group itself has a test URL (like url-test, fallback, load-balance groups)
+                          if 'url' in group:
+                              test_url = group['url']
+                              print(f"Found test URL for group '{name}': {test_url}")
+                          else:
+                              print(f"Warning: Group '{name}' does not have a 'url' for testing. Skipping.")
+                      else:
+                          print(f"Warning: Candidate '{name}' not found in proxies or groups. Skipping.")
+                          continue
+
+                      if test_url:
+                           futures[executor.submit(get_latency, name, test_url)] = name
+
+                  for future in as_completed(futures):
+                      name = futures[future]
+                      try:
+                          latency = future.result()
+                          results[name] = latency
+                      except Exception as exc:
+                          print(f"Exception testing {name}: {exc}")
+                          results[name] = float('inf')
+
+
+              print("--- Latency Tests Finished ---")
+
+              if not results:
+                  print("Error: No valid latency results obtained.")
+                  return None
+
+              # Find the proxy/group with the minimum latency
+              fastest_name = min(results, key=results.get)
+              min_latency = results[fastest_name]
+
+              if min_latency == float('inf'):
+                  print("Error: All candidate proxies/groups failed the latency test.")
+                  return None
+
+              print(f"\nFastest SG candidate: {fastest_name} ({min_latency:.2f} ms)")
+              return fastest_name
+
+          # 1. Fetch the original cll2.yml
+          original_text, original_bytes = fetch_content(SOURCE_URL)
+          if not original_text:
+              sys.exit(1)
+
+          # 2. Parse YAML to get proxy/group info for testing
+          try:
+              config_data = yaml.safe_load(original_bytes) # Use original bytes for potentially better encoding handling
+          except yaml.YAMLError as e:
+              print(f"Error parsing YAML: {e}")
+              sys.exit(1)
+
+          proxies_data = config_data.get('proxies', [])
+          groups_data = config_data.get('proxy-groups', [])
+
+          # 3. Find the fastest SG proxy
+          fastest_sg_proxy = find_fastest_proxy(proxies_data, groups_data, SG_CANDIDATES)
+
+          if not fastest_sg_proxy:
+              print("Could not determine fastest SG proxy. Exiting.")
+              sys.exit(1) # Exit if no suitable proxy found
+
+          # 4. Read custom rules from the local file
+          print(f"Reading custom rules from {RULES_FILE_NAME}...")
+          try:
+              with open(RULES_FILE_NAME, 'r', encoding='utf-8') as f:
+                  custom_rules_lines = f.readlines()
+              print(f"Read {len(custom_rules_lines)} lines from {RULES_FILE_NAME}.")
+          except FileNotFoundError:
+              print(f"Error: Rules file '{RULES_FILE_NAME}' not found in repository.")
+              sys.exit(1)
+          except Exception as e:
+              print(f"Error reading rules file: {e}")
+              sys.exit(1)
+
+          # 5. Replace placeholder in custom rules
+          modified_rules_content = ""
+          for line in custom_rules_lines:
+              modified_rules_content += line.replace(PLACEHOLDER_PROXY, fastest_sg_proxy)
+          print(f"Replaced '{PLACEHOLDER_PROXY}' with '{fastest_sg_proxy}' in custom rules.")
+
+          # 6. Inject modified rules into the original text content
+          print("Injecting modified rules into the configuration...")
+          lines = original_text.splitlines(True) # Keep line endings
+          output_lines = []
+          in_rules_section = False
+          rules_injected = False
+
+          for line in lines:
+              output_lines.append(line) # Add the current line first
+              stripped_line = line.strip()
+              # Check if this is the start of the rules section
+              if stripped_line == 'rules:':
+                  in_rules_section = True
+                  # Inject immediately after the 'rules:' line
+                  print("Found 'rules:' section. Injecting custom rules now.")
+                  # Add indentation (assuming 2 spaces, adjust if needed based on cll2.yml format)
+                  indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
+                  output_lines.append(indented_rules)
+                  rules_injected = True
+              # This part is removed as we inject right after 'rules:'
+              # # If we are in the rules section and haven't injected yet, and find the first rule definition
+              # elif in_rules_section and not rules_injected and stripped_line.startswith('-'):
+              #     # Inject *before* this line
+              #     # First, remove the line we just added (the first rule line)
+              #     output_lines.pop()
+              #     print("Found first existing rule. Injecting custom rules before it.")
+              #     # Add indentation (assuming 2 spaces, adjust if needed based on cll2.yml format)
+              #     indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
+              #     output_lines.append(indented_rules)
+              #     # Now add the original line back
+              #     output_lines.append(line)
+              #     rules_injected = True
+
+
+          if not rules_injected:
+              print("Warning: 'rules:' section not found or no existing rules to inject before. Appending rules to the end.")
+              # If 'rules:' was never found, add it and the rules
+              if not in_rules_section:
+                   output_lines.append("\nrules:\n")
+              indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
+              output_lines.append(indented_rules)
+
+
+          final_content = "".join(output_lines)
+
+          # 7. Save the final configuration
+          print(f"Saving updated configuration to {OUTPUT_FILE_NAME}...")
+          try:
+              with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as f:
+                  f.write(final_content)
+              print("Save successful.")
+          except Exception as e:
+              print(f"Error writing output file: {e}")
+              sys.exit(1)
+
+          print("\nScript finished successfully.")
+          EOF
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          # Check if there are changes
+          if git diff --quiet ${{ env.OUTPUT_FILE_NAME }}; then
+            echo "No changes detected in ${{ env.OUTPUT_FILE_NAME }}. Nothing to commit."
+            exit 0
+          fi
+          git add ${{ env.OUTPUT_FILE_NAME }}
+          git commit -m "Automated Clash config update ($(date +'%Y-%m-%d %H:%M:%S UTC'))"
+          # Retry push in case of minor conflicts or delays
+          attempt=1
+          while ! git push; do
+            if [ $attempt -ge 3 ]; then
+              echo "Push failed after $attempt attempts."
+              exit 1
+            fi
+            echo "Push failed. Retrying in 5 seconds... (Attempt $((attempt+1)))"
+            attempt=$((attempt+1))
+            sleep 5
+            git pull --rebase # Try to pull potential changes before pushing again
+          done
+          echo "Changes committed and pushed successfully."
