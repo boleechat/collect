@@ -243,43 +243,38 @@ jobs:
 
       - name: Commit and Push Changes
         env:
-          OUTPUT_FILE_NAME: cll2.yml # Make sure this matches the Python script
+          OUTPUT_FILE_NAME: cll2.yml
         run: |
           echo "--- Listing files after Python script ---"
-          ls -l # Add this line to see if cll2.yml exists and its size
+          ls -l
 
-          # Original Git commands follow...
-          git config --global user.name 'github-actions[bot]' # Changed back to bot user for consistency
+          git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
           echo "--- Git Status Before Add ---"
           git status
 
-          # Verify the file exists explicitly before trying git diff
+          # Check if the file was actually created by the script
           if [ ! -f "${{ env.OUTPUT_FILE_NAME }}" ]; then
-            echo "Error: Output file ${{ env.OUTPUT_FILE_NAME }} not found! Python script likely failed to save it here."
+            echo "Error: Output file ${{ env.OUTPUT_FILE_NAME }} not found!"
             exit 1
           fi
 
-          # Check specifically if the target file has changed compared to the repo HEAD
-          # Use 'git diff --quiet HEAD -- ${{ env.OUTPUT_FILE_NAME }}' for a more precise check
-          if git diff --quiet HEAD -- ${{ env.OUTPUT_FILE_NAME }}; then
-            echo "No changes detected in ${{ env.OUTPUT_FILE_NAME }} compared to the last commit. Nothing to commit."
-            exit 0 # Exit cleanly, no update needed
-          else
-             echo "Changes detected in ${{ env.OUTPUT_FILE_NAME }}."
-          fi
-
-          echo "Adding file: ${{ env.OUTPUT_FILE_NAME }}"
+          # Add the file unconditionally. This handles both untracked and modified cases.
+          echo "Adding/staging file: ${{ env.OUTPUT_FILE_NAME }}"
           git add ${{ env.OUTPUT_FILE_NAME }}
 
           echo "--- Git Status After Add ---"
           git status # Verify if the file is staged now
 
-          # Double-check staging before commit
+          # Check if there are any changes staged for commit.
+          # 'git diff --staged --quiet' exits 0 if nothing is staged, 1 if there are staged changes.
+          # We proceed only if it exits 1 (changes staged).
           if git diff --staged --quiet; then
-            echo "Error: File was detected as changed, but 'git add' failed to stage it. Check permissions or .gitignore?"
-            exit 1
+            echo "No changes staged for commit (file might be identical to repo version or add failed). Nothing to commit."
+            exit 0 # Exit cleanly if nothing was actually staged
+          else
+             echo "Changes are staged for commit."
           fi
 
           echo "Committing changes..."
@@ -295,7 +290,7 @@ jobs:
             echo "Push failed. Retrying in 5 seconds... (Attempt $((attempt+1)))"
             attempt=$((attempt+1))
             sleep 5
-            git fetch origin ${{ github.ref_name }}
-            git rebase origin/${{ github.ref_name }}
+            # Use pull --rebase --autostash for robustness in automation
+            git pull --rebase --autostash origin ${{ github.ref_name }}
           done
           echo "Changes committed and pushed successfully."
