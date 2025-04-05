@@ -1021,9 +1021,6 @@ rules:
   - DOMAIN-SUFFIX,stripe.com,SG-L
   - DOMAIN-SUFFIX,turn.livekit.cloud,SG-L
   - DOMAIN-KEYWORD,openai,SG-L
-  - IP-CIDR,24.199.123.28/32,no-resolve
-  - IP-CIDR,64.23.132.171/32,no-resolve
-  - IP-ASN,20473,no-resolve
   - DOMAIN-SUFFIX,sideloadly.io,SG-L
   - DOMAIN-SUFFIX,cydia.ichitaso.com,SG-L
   # NAME: Copilot
@@ -1073,8 +1070,6 @@ rules:
   - DOMAIN-SUFFIX,sentry.io,SG-L
   - DOMAIN-SUFFIX,stripe.com,SG-L
   - DOMAIN-SUFFIX,turn.livekit.cloud,SG-L
-  - IP-ASN,14061
-  - IP-ASN,20473
   
   # NAME: Claude
   # AUTHOR: blackmatrix7
