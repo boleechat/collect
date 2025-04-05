@@ -243,8 +243,8 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'boleechat'
+          git config --global user.email 'bolee132@gmail.com'
           # Check if there are changes
           if git diff --quiet ${{ env.OUTPUT_FILE_NAME }}; then
             echo "No changes detected in ${{ env.OUTPUT_FILE_NAME }}. Nothing to commit."
