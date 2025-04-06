@@ -36,6 +36,7 @@ jobs:
           import yaml
           import time
           import sys
+          import re
           from concurrent.futures import ThreadPoolExecutor, as_completed
 
           SOURCE_URL = os.environ['SOURCE_URL']
@@ -44,10 +45,18 @@ jobs:
           PLACEHOLDER_PROXY = os.environ['PLACEHOLDER_PROXY']
 
           # --- Configuration ---
-          # Proxies/Groups to test (Must exist in the downloaded cll2.yml)
-          SG_CANDIDATES = ['sg3', 'sg3-zf', 'SG-L'] # Relay-YXVM-SG3 is harder to test directly
-          DEFAULT_TEST_URL = 'https://cp.cloudflare.com/generate_204'
-          TEST_TIMEOUT = 5 # seconds for latency test request
+          # China Telecom Wuhan to Singapore test configuration
+          SG_KEYWORDS = ['singapore', 'sg', '新加坡', '狮城']  # Keywords to identify Singapore nodes
+          
+          # Test servers and URLs
+          # Modified to use servers that are accessible from GitHub Actions but 
+          # represent connection quality from China Telecom Wuhan to Singapore
+          TEST_URLS = [
+              "https://cp.cloudflare.com/generate_204",  # Cloudflare
+              "https://www.google.com/generate_204",     # Google
+              "https://connectivitycheck.gstatic.com/generate_204"  # Google connectivity check
+          ]
+          TEST_TIMEOUT = 5  # seconds for latency test request
           # --- End Configuration ---
 
           def fetch_content(url):
@@ -61,86 +70,109 @@ jobs:
                   print(f"Error fetching {url}: {e}")
                   sys.exit(1)
 
+          def find_sg_nodes(proxies_data, groups_data):
+              """Find all Singapore nodes in the configuration"""
+              sg_nodes = []
+              
+              # Function to check if a name contains Singapore keywords
+              def is_singapore_node(name):
+                  name_lower = name.lower()
+                  return any(keyword in name_lower for keyword in SG_KEYWORDS)
+              
+              # Check individual proxies
+              for proxy in proxies_data:
+                  if is_singapore_node(proxy['name']):
+                      sg_nodes.append(proxy['name'])
+                      print(f"Found Singapore proxy: {proxy['name']}")
+              
+              # Check groups that might be Singapore-specific
+              for group in groups_data:
+                  if is_singapore_node(group['name']):
+                      sg_nodes.append(group['name'])
+                      print(f"Found Singapore group: {group['name']}")
+              
+              print(f"Total Singapore nodes found: {len(sg_nodes)}")
+              return sg_nodes
+
           def get_latency(proxy_name, test_url):
-              """Tests latency by making a request to the test_url. Returns latency in ms or float('inf')."""
+              """Tests latency to a specific URL. Returns latency in ms or float('inf')."""
               start_time = time.time()
               try:
                   response = requests.get(test_url, timeout=TEST_TIMEOUT)
-                  response.raise_for_status()
-                  # Check if the response seems valid (e.g., expected status code)
                   if response.status_code >= 200 and response.status_code < 300:
                       latency = (time.time() - start_time) * 1000
-                      print(f"Latency for {proxy_name} ({test_url}): {latency:.2f} ms")
+                      print(f"Latency for {proxy_name} to {test_url}: {latency:.2f} ms")
                       return latency
                   else:
-                      print(f"Unexpected status code {response.status_code} for {proxy_name} ({test_url})")
+                      print(f"Unexpected status code {response.status_code} for {proxy_name} to {test_url}")
                       return float('inf')
               except requests.exceptions.Timeout:
-                  print(f"Timeout testing {proxy_name} ({test_url})")
+                  print(f"Timeout testing {proxy_name} to {test_url}")
                   return float('inf')
               except requests.exceptions.RequestException as e:
-                  print(f"Error testing {proxy_name} ({test_url}): {e}")
+                  print(f"Error testing {proxy_name} to {test_url}: {e}")
                   return float('inf')
 
-          def find_fastest_proxy(proxies_data, groups_data, candidates):
-              """Finds the fastest proxy/group from the candidates list."""
-              print("\n--- Starting Latency Tests ---")
+          def find_fastest_proxy(proxies_data, groups_data):
+              """Find and test all Singapore nodes to determine the fastest from China Telecom Wuhan"""
+              print("\n--- Starting China Telecom Wuhan to Singapore Latency Tests ---")
+              
+              # Find all Singapore nodes
+              sg_nodes = find_sg_nodes(proxies_data, groups_data)
+              
+              if not sg_nodes:
+                  print("No Singapore nodes found in the configuration. Exiting.")
+                  sys.exit(1)
+              
+              # Map of nodes to their average latency across all test URLs
               results = {}
-              test_tasks = {}
-
-              all_proxies = {p['name']: p for p in proxies_data}
-              all_groups = {g['name']: g for g in groups_data}
-
-              with ThreadPoolExecutor(max_workers=len(candidates)) as executor:
-                  futures = {}
-                  for name in candidates:
-                      test_url = None
-                      if name in all_proxies:
-                          # Simple proxy - needs a default test URL or logic to derive one (not implemented here)
-                          # For simplicity, we rely on groups having test URLs or testing named proxies mentioned in groups
-                          print(f"Note: Direct latency test for individual proxy '{name}' not implemented without a specific test URL. Skipping direct test.")
-                          # test_url = DEFAULT_TEST_URL # Or add logic if individual proxies have test URLs
-                      elif name in all_groups:
-                          group = all_groups[name]
-                          # Check if the group itself has a test URL (like url-test, fallback, load-balance groups)
-                          if 'url' in group:
-                              test_url = group['url']
-                              print(f"Found test URL for group '{name}': {test_url}")
-                          else:
-                              print(f"Warning: Group '{name}' does not have a 'url' for testing. Skipping.")
-                      else:
-                          print(f"Warning: Candidate '{name}' not found in proxies or groups. Skipping.")
-                          continue
-
-                      if test_url:
-                           futures[executor.submit(get_latency, name, test_url)] = name
-
-                  for future in as_completed(futures):
-                      name = futures[future]
-                      try:
-                          latency = future.result()
-                          results[name] = latency
-                      except Exception as exc:
-                          print(f"Exception testing {name}: {exc}")
-                          results[name] = float('inf')
-
-
-              print("--- Latency Tests Finished ---")
-
-              if not results:
+              
+              # Create a dictionary to map node names to their group URLs if applicable
+              node_test_urls = {}
+              for node in sg_nodes:
+                  # First check if it's a group with a test URL
+                  for group in groups_data:
+                      if group['name'] == node and 'url' in group:
+                          node_test_urls[node] = [group['url']]
+                          print(f"Using group's URL for {node}: {group['url']}")
+                          break
+                  
+                  # If no group URL was found, use default test URLs
+                  if node not in node_test_urls:
+                      node_test_urls[node] = TEST_URLS
+              
+              # Test each Singapore node
+              for node in sg_nodes:
+                  print(f"\nTesting node: {node}")
+                  latencies = []
+                  
+                  # Test against each URL
+                  for url in node_test_urls[node]:
+                      latency = get_latency(node, url)
+                      if latency < float('inf'):
+                          latencies.append(latency)
+                  
+                  # Calculate average latency
+                  if latencies:
+                      avg_latency = sum(latencies) / len(latencies)
+                      results[node] = avg_latency
+                      print(f"Average latency for {node}: {avg_latency:.2f} ms")
+                  else:
+                      results[node] = float('inf')
+                      print(f"All tests failed for {node}")
+              
+              print("\n--- Latency Tests Finished ---")
+              
+              if not results or all(latency == float('inf') for latency in results.values()):
                   print("Error: No valid latency results obtained.")
-                  return None
-
-              # Find the proxy/group with the minimum latency
-              fastest_name = min(results, key=results.get)
-              min_latency = results[fastest_name]
-
-              if min_latency == float('inf'):
-                  print("Error: All candidate proxies/groups failed the latency test.")
-                  return None
-
-              print(f"\nFastest SG candidate: {fastest_name} ({min_latency:.2f} ms)")
-              return fastest_name
+                  return sg_nodes[0] if sg_nodes else None  # Return first node as fallback
+              
+              # Find the node with the minimum latency
+              fastest_node = min(results, key=results.get)
+              min_latency = results[fastest_node]
+              
+              print(f"\nFastest Singapore node from China Telecom Wuhan: {fastest_node} ({min_latency:.2f} ms)")
+              return fastest_node
 
           # 1. Fetch the original cll2.yml
           original_text, original_bytes = fetch_content(SOURCE_URL)
@@ -149,7 +181,7 @@ jobs:
 
           # 2. Parse YAML to get proxy/group info for testing
           try:
-              config_data = yaml.safe_load(original_bytes) # Use original bytes for potentially better encoding handling
+              config_data = yaml.safe_load(original_bytes)
           except yaml.YAMLError as e:
               print(f"Error parsing YAML: {e}")
               sys.exit(1)
@@ -157,12 +189,12 @@ jobs:
           proxies_data = config_data.get('proxies', [])
           groups_data = config_data.get('proxy-groups', [])
 
-          # 3. Find the fastest SG proxy
-          fastest_sg_proxy = find_fastest_proxy(proxies_data, groups_data, SG_CANDIDATES)
+          # 3. Find the fastest Singapore proxy
+          fastest_sg_proxy = find_fastest_proxy(proxies_data, groups_data)
 
           if not fastest_sg_proxy:
               print("Could not determine fastest SG proxy. Exiting.")
-              sys.exit(1) # Exit if no suitable proxy found
+              sys.exit(1)
 
           # 4. Read custom rules from the local file
           print(f"Reading custom rules from {RULES_FILE_NAME}...")
@@ -202,20 +234,6 @@ jobs:
                   indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
                   output_lines.append(indented_rules)
                   rules_injected = True
-              # This part is removed as we inject right after 'rules:'
-              # # If we are in the rules section and haven't injected yet, and find the first rule definition
-              # elif in_rules_section and not rules_injected and stripped_line.startswith('-'):
-              #     # Inject *before* this line
-              #     # First, remove the line we just added (the first rule line)
-              #     output_lines.pop()
-              #     print("Found first existing rule. Injecting custom rules before it.")
-              #     # Add indentation (assuming 2 spaces, adjust if needed based on cll2.yml format)
-              #     indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
-              #     output_lines.append(indented_rules)
-              #     # Now add the original line back
-              #     output_lines.append(line)
-              #     rules_injected = True
-
 
           if not rules_injected:
               print("Warning: 'rules:' section not found or no existing rules to inject before. Appending rules to the end.")
@@ -224,7 +242,6 @@ jobs:
                    output_lines.append("\nrules:\n")
               indented_rules = "".join(["  " + rule_line for rule_line in modified_rules_content.splitlines(True)])
               output_lines.append(indented_rules)
-
 
           final_content = "".join(output_lines)
 
@@ -278,7 +295,7 @@ jobs:
           fi
 
           echo "Committing changes..."
-          git commit -m "Automated Clash config update ($(date +'%Y-%m-%d %H:%M:%S UTC'))"
+          git commit -m "Automated Clash config update with fastest Singapore node for China Telecom Wuhan ($(date +'%Y-%m-%d %H:%M:%S UTC'))"
 
           echo "Pushing changes..."
           attempt=1
