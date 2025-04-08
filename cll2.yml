@@ -288,19 +288,20 @@ proxies:
     client-fingerprint: random
     # fingerprint: xxxx
     # skip-cert-verify: true
-  - name: DMIT39
+  - name: WEBSHAREBWG01
     type: vless
-    server: dmit39.aloofly.eu
-    port: 27791
-    uuid: fe7aa154-3561-4068-b280-b7e7eea411fb
+    server: bwgdc1.aloofly.eu
+    port: 23295
+    uuid: d29abcc8-889f-40d4-89c7-bb023ec31a61
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
-    servername: dmit39.aloofly.eu
+    servername: www.amd.com
+    reality-opts:
+      public-key: hdXgEyTgfYa0tSA982Ao7bTrefhyj1e3evCBhoAJdG0
+      short-id: f5108ea6
     client-fingerprint: random
-    # fingerprint: xxxx
-    # skip-cert-verify: true
   # - name: SJC-1
   #   server: sjc.aloofly.eu
   #   port: 50225
@@ -473,7 +474,7 @@ proxy-groups:
       - sg3-zf
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       - TEMPPPPP
       - USS-HOME-O
       - USS-2ISP-F
@@ -529,7 +530,7 @@ proxy-groups:
       
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       
       
       
@@ -625,7 +626,7 @@ proxy-groups:
       
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       
       
       
@@ -680,7 +681,7 @@ proxy-groups:
       
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       
       
       
@@ -810,7 +811,7 @@ proxy-groups:
       
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       - US-BWGDC01
       
       - BANDWAGON-HK
@@ -863,7 +864,7 @@ proxy-groups:
       - YXVM-HKK
       
       - CLAW9909
-      - CLAW2
+      
       - SJC-1
       
     type: select
@@ -875,10 +876,10 @@ proxy-groups:
       - HK-L
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       - USS-2ISP-F
       - USS-HOME-O
-      - akile-us4837
+      - WEBSHAREBWG01
       - SJC-1
       
     type: select
@@ -959,7 +960,7 @@ proxy-groups:
       - BANDWAGON-HK
       - YXVM-HKK
       - CLAW9909
-      - CLAW2
+      
       
     type: load-balance
     url: https://cp.cloudflare.com/generate_204
