@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # Spider for SuperZhuang using pre-compiled data and iframe extraction
+# v2 - Corrected parsing for comma-space delimited TXT file
 
 import json
 import sys
@@ -62,9 +63,15 @@ class Spider(Spider):
             lines = response.text.strip().split('\n')
             parsed_data = []
             for line in lines:
-                parts = line.strip().split('\t') # Split by tab
+                if not line.strip(): # Skip empty lines
+                    continue
+                # !!! CORRECTION: Split by ' , ' and strip whitespace !!!
+                parts = line.split(' , ')
                 if len(parts) == 3:
-                    detail_url, title, img_url = parts
+                    detail_url = parts[0].strip()
+                    title = parts[1].strip()
+                    img_url = parts[2].strip()
+
                     if detail_url.startswith('http') and title and img_url.startswith('http'):
                          # Use the detail URL as the unique ID
                         parsed_data.append({
@@ -74,9 +81,9 @@ class Spider(Spider):
                             'vod_remarks': '点击查看详情' # Simple remark
                         })
                     else:
-                        print(f"Skipping invalid line: {line}")
+                        print(f"Skipping invalid data after split: URL={detail_url}, Title={title}, Img={img_url}")
                 else:
-                    print(f"Skipping line with incorrect format: {line}")
+                    print(f"Skipping line with incorrect format (expected 3 parts separated by ' , '): {line}")
 
             self.video_data = parsed_data
             self.data_loaded = True
@@ -153,6 +160,13 @@ class Spider(Spider):
         print(f"Fetching details for URL: {detail_page_url}")
 
         # Find the original item data (title, pic) from our loaded list
+        # Need to load data if not already loaded (e.g., if accessed directly via search)
+        if not self.data_loaded:
+            if not self.load_data_from_github():
+                 # If data load fails here, we can't proceed reliably
+                 return {'list': [{'vod_name': f"数据加载失败 {detail_page_url}", 'vod_play_from': 'SuperZhuang', 'vod_play_url': f"无效${detail_page_url}"}]}
+
+
         original_item = next((item for item in self.video_data if item['vod_id'] == detail_page_url), None)
         if not original_item:
              print(f"Error: Could not find original item for ID {detail_page_url} in loaded data.")
@@ -164,9 +178,10 @@ class Spider(Spider):
             # Fetch the detail page HTML using the mobile User-Agent
             response = self.session.get(detail_page_url, headers=self.headers, timeout=15)
             response.raise_for_status()
-            response.encoding = response.apparent_encoding # Try to detect encoding
-            html_content = response.text
-            soup = BeautifulSoup(html_content, 'html.parser')
+            # Let BeautifulSoup handle encoding detection, or force if needed
+            # response.encoding = response.apparent_encoding
+            html_content = response.content # Use content to let BS handle encoding
+            soup = BeautifulSoup(html_content, 'html.parser', from_encoding='utf-8') # Specify encoding hint
 
             # Find the Tencent iframe
             iframe_tag = soup.find('iframe', {'src': re.compile(r'v\.qq\.com/txp/iframe/player\.html\?vid=')})
@@ -184,7 +199,9 @@ class Spider(Spider):
 
                 # Try to get a better title from the page if possible
                 page_title_tag = soup.find('title')
-                title = page_title_tag.text.strip() if page_title_tag else original_item['vod_name']
+                # Use original item name as primary, fallback to page title
+                title = original_item['vod_name'] if original_item['vod_name'] != '加载中...' else (page_title_tag.text.strip() if page_title_tag else '无标题')
+
 
                 # Try to get description
                 desc_tag = soup.find('meta', attrs={'name': 'description'})
@@ -205,15 +222,25 @@ class Spider(Spider):
                 return {'list': [vod]}
             else:
                 print(f"Error: Could not find Tencent iframe in detail page: {detail_page_url}")
-                return {'list': []}
+                # Still return item info but with invalid play URL
+                return {'list': [{
+                            'vod_id': detail_page_url,
+                            'vod_name': original_item['vod_name'],
+                            'vod_pic': original_item['vod_pic'],
+                            'vod_remarks': '无法找到播放源',
+                            'vod_content': '在详情页未找到腾讯视频iframe',
+                            'vod_play_from': 'SuperZhuang',
+                            'vod_play_url': f"{original_item['vod_name']}$无效"
+                       }]}
+
 
         except requests.exceptions.RequestException as e:
             print(f"Error fetching detail page {detail_page_url}: {e}")
         except Exception as e:
             print(f"Unexpected error processing detail page {detail_page_url}: {e}")
 
-        # Fallback if error occurs
-        return {'list': [{'vod_name': f"无法加载详情 - {original_item['vod_name']}", 'vod_play_from': 'SuperZhuang', 'vod_play_url': f"无效${detail_page_url}"}]}
+        # Fallback if error occurs during fetch/parse
+        return {'list': [{'vod_name': f"加载详情出错 - {original_item['vod_name']}", 'vod_play_from': 'SuperZhuang', 'vod_play_url': f"无效${detail_page_url}"}]}
 
 
     def searchContent(self, key, quick, pg="1"):
@@ -222,8 +249,9 @@ class Spider(Spider):
             return {'list': []}
 
         results = []
+        key_lower = key.lower()
         for item in self.video_data:
-            if key.lower() in item['vod_name'].lower():
+            if key_lower in item['vod_name'].lower():
                 results.append(item)
 
         # Simple pagination for search results (optional)
