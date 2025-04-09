@@ -364,7 +364,7 @@ proxies:
     type: vless
     server: yxvm-hk.aloofly.eu
     port: 52275
-    uuid: dcccbff9-98a3-48ec-91cb-46b00a7b078e
+    uuid: 981f21af-3297-49be-ace9-a58517aebff7
     network: tcp
     tls: true
     udp: true
