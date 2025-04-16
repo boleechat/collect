@@ -99,20 +99,24 @@ proxies:
       public-key: D4SqVQVjB3NMI0CNRKp7k_dbbFdyHR85K-BKkacxyBI
       short-id: ec6967f4da85
     client-fingerprint: chrome
-  - name: Voll-HK
+  - name: SGGCNCN2
     type: vless
-    server: 103.234.53.195
-    port: 8600
-    uuid: 0e894bcd-5d28-48c2-b93f-0e37c240630f
-    network: tcp
-    tls: true
+    server: 46.3.192.55
+    port: 443
+    uuid: 00000000-0000-0000-0000-000000000000
     udp: true
-    flow: xtls-rprx-vision
-    servername: www.amd.com
-    reality-opts:
-      public-key: 9yWheKzHOIQASgN4sU_G-4zuthAdWKRBL_1ZNdF2kQY
-      short-id: 6fca54e9
-    client-fingerprint: edge
+    tls: true
+    network: ws
+    # client-fingerprint: random # Available: "chrome","firefox","safari","random","none"
+    servername: 46.3.106.249
+    # skip-cert-verify: true
+    # fingerprint: xxxx
+    ws-opts:
+      path: "/c217a028-e706-4875-a3bd-04c34df14a08/ws-46.3.192.55/?ed=2560"
+      headers:
+        Host: 46.3.106.249
+      # v2ray-http-upgrade: false
+      # v2ray-http-upgrade-fast-open: false
   - name: iepl-warp
     type: wireguard
     server: sh-iepl2.gorelay.xyz
@@ -211,14 +215,19 @@ proxies:
       short-id: 9e524a66
     client-fingerprint: ios
   - name: TEMPPPPP
-    type: vmess
-    server: iepl-cn-10.nat.niiin.in
-    port: 33929
-    uuid: 249d2a8a-daf7-46f4-a26c-8a12c40862c2
-    alterId: 0
-    cipher: none
+    type: vless
+    server: 46.3.193.34
+    port: 52291
+    uuid: 2445673a-84e4-48cc-b039-145a14323af7
+    network: tcp
+    tls: true
     udp: true
-    network: tcp 
+    flow: xtls-rprx-vision
+    servername: www.amd.com
+    reality-opts:
+      public-key: Tx3pIerpi_5xek68fKsdvo-rWoUKg8OzOWyB_5WpmGk
+      # short-id: 9e524a66
+    client-fingerprint: chrome
   - name: USS-2ISP
     type: vless
     server: sjc.aloofly.eu
@@ -275,6 +284,20 @@ proxies:
       public-key: Qt4CixeKjXXvyeC1HcqFpapqNFnaCZ6EDaY3ZzTF0Q8
       # short-id: 6e50fe4125
     client-fingerprint: random
+  - name: USS-HOME-BWG
+    type: vless
+    server: bwgdc1.aloofly.eu
+    port: 23300
+    uuid: 93fd8bdc-a1ee-49fd-b2b5-6f0c9453e0fa
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amd.com
+    reality-opts:
+      public-key: P-MM9nqq3XGxAF_pNZBm3ZHc3ZABeuZIHKa-gFrA-TU
+      short-id: c43f
+    client-fingerprint: ios
   - name: SJC-1
     type: vless
     server: sjc.aloofly.eu
@@ -387,24 +410,42 @@ proxies:
       public-key: fzG626cy5WYhdmWDY8aLwhJ30_vhj7cQLnRauO9WK2k
       short-id: 08be
     client-fingerprint: chrome
-  # - name: YXVM-HKK
-  #   type: vless
-  #   server: yxvm-hk.aloofly.eu
-  #   port: 39606
-  #   uuid: db50fee3-dc95-4b0b-d3c0-285afd740c75
-  #   udp: true
-  #   tls: true
-  #   network: ws
-  #   client-fingerprint: random # Available: "chrome","firefox","safari","random","none"
-  #   servername: yxvm-hk.aloofly.eu # priority over wss host
-  #   # skip-cert-verify: true
-  #   # fingerprint: xxxx
-  #   ws-opts:
-  #     path: "/zxcsajsa"
-  #     headers:
-  #       Host: yxvm-hk.aloofly.eu
-  #     v2ray-http-upgrade: true
-  #     v2ray-http-upgrade-fast-open: true
+  - name: SSGLXCC
+    type: vless
+    server: sglxc.aloofly.eu
+    port: 2053
+    uuid: b1f90e0c-0636-42e5-889f-52d7fae33899
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: chrome # Available: "chrome","firefox","safari","random","none"
+    servername: sglxc.aloofly.eu # priority over wss host
+    # skip-cert-verify: true
+    # fingerprint: chrome
+    ws-opts:
+      path: "/b1f90e0c-0636-42e5-889f-52d7fae33899"
+      headers:
+        Host: sglxc.aloofly.eu
+      v2ray-http-upgrade: true
+      v2ray-http-upgrade-fast-open: true
+  - name: SGLXCDN
+    type: vless
+    server: www.speedtest.net
+    port: 2053
+    uuid: b1f90e0c-0636-42e5-889f-52d7fae33899
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: chrome # Available: "chrome","firefox","safari","random","none"
+    servername: sglxc.aloofly.eu # priority over wss host
+    # skip-cert-verify: true
+    # fingerprint: chrome
+    ws-opts:
+      path: "/b1f90e0c-0636-42e5-889f-52d7fae33899"
+      headers:
+        Host: sglxc.aloofly.eu
+      v2ray-http-upgrade: true
+      v2ray-http-upgrade-fast-open: true
   - name: ZGO-V4
     type: vless
     server: 23.166.168.160
@@ -474,10 +515,10 @@ proxy-groups:
       - sg3-zf
       - YXVM-HKK
       - CLAW9909
-      
+      - SGGCNCN2
       - TEMPPPPP
-      - USS-HOME-O
-      - USS-2ISP-F
+      - USS-HOME-BWG
+      - USS-2ISP-O
       - US-BWGDC01
       
       
@@ -522,7 +563,7 @@ proxy-groups:
       
       - US-BWGDC01
       - TEMPPPPP
-      
+      - SGGCNCN2
       
       
       
@@ -658,7 +699,7 @@ proxy-groups:
       - DIRECT
       - US-BWGDC01
       - USS-2ISP-F
-      - USS-HOME-O
+      - USS-HOME-BWG
     type: select
   - name: Streaming馃摵
     proxies:
@@ -670,7 +711,7 @@ proxy-groups:
       - USA-L
       
       - HK-L
-      
+      - Relay-SG192-SGLXC
       - USS-2ISP-F
       - Lan Proxy(L)
       - Lan proxy
@@ -714,8 +755,9 @@ proxy-groups:
       - Lan proxy
       - SG-L
       - NigerliaNN
-      
+      - SSGLXCC
       - Relay-YXVM-SG3
+      - Relay-SG192-SGLXC
       - YXVM-HKK
       - sg3
       - sg3-zf
@@ -724,7 +766,7 @@ proxy-groups:
     type: select
   - name: Tiktok馃幍
     proxies:
-      - USS-HOME-O
+      - USS-HOME-BWG
       - USS-2ISP-F
       - USS-2ISP-O
       
@@ -798,11 +840,11 @@ proxy-groups:
       - Overseas馃實
       - Lan Proxy(L)
       - Lan proxy
-      - USS-HOME-O
+      - USS-HOME-BWG
       - USS-2ISP-O
-      
+      - SGGCNCN2
       - USA-L
-      
+      - SSGLXCC
       
       - SG-L
       
@@ -878,7 +920,7 @@ proxy-groups:
       - CLAW9909
       
       - USS-2ISP-F
-      - USS-HOME-O
+      - USS-HOME-BWG
       - WEBSHAREBWG01
       - SJC-1
       
@@ -928,6 +970,12 @@ proxy-groups:
     proxies:
       - YXVM-HKK
       - sg3
+  - name: Relay-SG192-SGLXC
+    type: relay
+    udp: true
+    proxies:
+      - SGGCNCN2
+      - SGLXCDN
   - name: USS-2ISP-F
     type: fallback
     udp: true
@@ -989,88 +1037,88 @@ proxy-groups:
 
 
 rules:
-  - DOMAIN,browser-intake-datadoghq.com,Relay-YXVM-SG3
-  - DOMAIN,chat.openai.com.cdn.cloudflare.net,Relay-YXVM-SG3
-  - DOMAIN,gemini.google.com,Relay-YXVM-SG3
-  - DOMAIN,openai-api.arkoselabs.com,Relay-YXVM-SG3
-  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,Relay-YXVM-SG3
-  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,Relay-YXVM-SG3
-  - DOMAIN,production-openaicom-storage.azureedge.net,Relay-YXVM-SG3
-  - DOMAIN,static.cloudflareinsights.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,ai.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,algolia.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,api.statsig.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,auth0.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,chatgpt.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,events.statsigapi.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,featuregates.org,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,host.livekit.cloud,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,identrust.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,intercom.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,intercomcdn.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,launchdarkly.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,oaistatic.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,oaiusercontent.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,observeit.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openai.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openaicom.imgix.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,segment.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,sentry.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,stripe.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,turn.livekit.cloud,Relay-YXVM-SG3
-  - DOMAIN-KEYWORD,openai,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,sideloadly.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,cydia.ichitaso.com,Relay-YXVM-SG3
+  - DOMAIN,browser-intake-datadoghq.com,sg3
+  - DOMAIN,chat.openai.com.cdn.cloudflare.net,sg3
+  - DOMAIN,gemini.google.com,sg3
+  - DOMAIN,openai-api.arkoselabs.com,sg3
+  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,sg3
+  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,sg3
+  - DOMAIN,production-openaicom-storage.azureedge.net,sg3
+  - DOMAIN,static.cloudflareinsights.com,sg3
+  - DOMAIN-SUFFIX,ai.com,sg3
+  - DOMAIN-SUFFIX,algolia.net,sg3
+  - DOMAIN-SUFFIX,api.statsig.com,sg3
+  - DOMAIN-SUFFIX,auth0.com,sg3
+  - DOMAIN-SUFFIX,chatgpt.com,sg3
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3
+  - DOMAIN-SUFFIX,events.statsigapi.net,sg3
+  - DOMAIN-SUFFIX,featuregates.org,sg3
+  - DOMAIN-SUFFIX,host.livekit.cloud,sg3
+  - DOMAIN-SUFFIX,identrust.com,sg3
+  - DOMAIN-SUFFIX,intercom.io,sg3
+  - DOMAIN-SUFFIX,intercomcdn.com,sg3
+  - DOMAIN-SUFFIX,launchdarkly.com,sg3
+  - DOMAIN-SUFFIX,oaistatic.com,sg3
+  - DOMAIN-SUFFIX,oaiusercontent.com,sg3
+  - DOMAIN-SUFFIX,observeit.net,sg3
+  - DOMAIN-SUFFIX,openai.com,sg3
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3
+  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3
+  - DOMAIN-SUFFIX,segment.io,sg3
+  - DOMAIN-SUFFIX,sentry.io,sg3
+  - DOMAIN-SUFFIX,stripe.com,sg3
+  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3
+  - DOMAIN-KEYWORD,openai,sg3
+  - DOMAIN-SUFFIX,sideloadly.io,sg3
+  - DOMAIN-SUFFIX,cydia.ichitaso.com,sg3
   # NAME: Copilot
-  - DOMAIN-SUFFIX,api.msn.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,api.statsig.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,assets.msn.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,copilot.microsoft.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,in.appcenter.ms,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,location.microsoft.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,odc.officeapps.live.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,r.bing.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,self.events.data.microsoft.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,services.bingapis.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,static.cloudflareinsights.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,sydney.bing.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,www.bing.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,algolia.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,microsoftapp.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,auth0.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,challenges.cloudflare.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,chatgpt.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,edgeservices.bing.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,events.statsigapi.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,featuregates.org,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,host.livekit.cloud,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,identrust.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,intercom.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,intercomcdn.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,launchdarkly.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,oaistatic.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,oaiusercontent.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,observeit.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openai.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,openaicom.imgix.net,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,segment.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,sentry.io,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,stripe.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,turn.livekit.cloud,Relay-YXVM-SG3
+  - DOMAIN-SUFFIX,api.msn.com,sg3
+  - DOMAIN-SUFFIX,api.statsig.com,sg3
+  - DOMAIN-SUFFIX,assets.msn.com,sg3
+  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,sg3
+  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,sg3
+  - DOMAIN-SUFFIX,copilot.microsoft.com,sg3
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,sg3
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,sg3
+  - DOMAIN-SUFFIX,in.appcenter.ms,sg3
+  - DOMAIN-SUFFIX,location.microsoft.com,sg3
+  - DOMAIN-SUFFIX,odc.officeapps.live.com,sg3
+  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,sg3
+  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,sg3
+  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,sg3
+  - DOMAIN-SUFFIX,r.bing.com,sg3
+  - DOMAIN-SUFFIX,self.events.data.microsoft.com,sg3
+  - DOMAIN-SUFFIX,services.bingapis.com,sg3
+  - DOMAIN-SUFFIX,static.cloudflareinsights.com,sg3
+  - DOMAIN-SUFFIX,sydney.bing.com,sg3
+  - DOMAIN-SUFFIX,www.bing.com,sg3
+  - DOMAIN-SUFFIX,algolia.net,sg3
+  - DOMAIN-SUFFIX,microsoftapp.net,sg3
+  - DOMAIN-SUFFIX,auth0.com,sg3
+  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,sg3
+  - DOMAIN-SUFFIX,challenges.cloudflare.com,sg3
+  - DOMAIN-SUFFIX,chatgpt.com,sg3
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3
+  - DOMAIN-SUFFIX,edgeservices.bing.com,sg3
+  - DOMAIN-SUFFIX,events.statsigapi.net,sg3
+  - DOMAIN-SUFFIX,featuregates.org,sg3
+  - DOMAIN-SUFFIX,host.livekit.cloud,sg3
+  - DOMAIN-SUFFIX,identrust.com,sg3
+  - DOMAIN-SUFFIX,intercom.io,sg3
+  - DOMAIN-SUFFIX,intercomcdn.com,sg3
+  - DOMAIN-SUFFIX,launchdarkly.com,sg3
+  - DOMAIN-SUFFIX,oaistatic.com,sg3
+  - DOMAIN-SUFFIX,oaiusercontent.com,sg3
+  - DOMAIN-SUFFIX,observeit.net,sg3
+  - DOMAIN-SUFFIX,openai.com,sg3
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3
+  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3
+  - DOMAIN-SUFFIX,segment.io,sg3
+  - DOMAIN-SUFFIX,sentry.io,sg3
+  - DOMAIN-SUFFIX,stripe.com,sg3
+  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3
   
   # NAME: Claude
   # AUTHOR: blackmatrix7
@@ -1080,9 +1128,9 @@ rules:
   # DOMAIN-SUFFIX: 2
   # TOTAL: 3
   # payload:
-  - DOMAIN,cdn.usefathom.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,anthropic.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,claude.ai,Relay-YXVM-SG3
+  - DOMAIN,cdn.usefathom.com,sg3
+  - DOMAIN-SUFFIX,anthropic.com,sg3
+  - DOMAIN-SUFFIX,claude.ai,sg3
   
   
   # NAME: Gemini
@@ -1094,19 +1142,19 @@ rules:
   # DOMAIN-SUFFIX: 7
   # TOTAL: 13
   #payload:
-  - DOMAIN,ai.google.dev,Relay-YXVM-SG3
-  - DOMAIN,alkalimakersuite-pa.clients6.google.com,Relay-YXVM-SG3
-  - DOMAIN,makersuite.google.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,bard.google.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,deepmind.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,deepmind.google,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,gemini.google.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,generativeai.google,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,Relay-YXVM-SG3
-  - DOMAIN-SUFFIX,apis.google.com,Relay-YXVM-SG3
-  - DOMAIN-KEYWORD,colab,Relay-YXVM-SG3
-  - DOMAIN-KEYWORD,developerprofiles,Relay-YXVM-SG3
-  - DOMAIN-KEYWORD,generativelanguage,Relay-YXVM-SG3
+  - DOMAIN,ai.google.dev,sg3
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,sg3
+  - DOMAIN,makersuite.google.com,sg3
+  - DOMAIN-SUFFIX,bard.google.com,sg3
+  - DOMAIN-SUFFIX,deepmind.com,sg3
+  - DOMAIN-SUFFIX,deepmind.google,sg3
+  - DOMAIN-SUFFIX,gemini.google.com,sg3
+  - DOMAIN-SUFFIX,generativeai.google,sg3
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,sg3
+  - DOMAIN-SUFFIX,apis.google.com,sg3
+  - DOMAIN-KEYWORD,colab,sg3
+  - DOMAIN-KEYWORD,developerprofiles,sg3
+  - DOMAIN-KEYWORD,generativelanguage,sg3
   
   
      # ------------my edition -------------s
