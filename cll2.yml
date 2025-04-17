@@ -71,20 +71,20 @@ proxies:
       public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
       short-id: 9e524a66
     client-fingerprint: chrome
-  - name: JP222222
+  - name: SGG193
     type: vless
-    server: jp2.aloofly.eu
-    port: 47687
-    uuid: 59d95f41-442e-4fac-b0a4-4ea940f9e21f
+    server: sgg193.aloofly.eu
+    port: 20010
+    uuid: 5d87b4f5-4d42-4612-b31d-e634ecd6487f
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
     servername: www.amd.com
     reality-opts:
-      public-key: QLZz9tq_kFwovkMtL-4AdAo_KCKAr_JiUFegfsJZ_AA
-      # short-id: df
-    client-fingerprint: random
+      public-key: nTcEXdtEYBEJvpdMDeAeGOg1DzihfRjlR23haU2hgXw
+      short-id: 09a452
+    client-fingerprint: ios
   - name: akile-us4837
     type: vless
     server: ah.9000000.best
@@ -516,6 +516,7 @@ proxy-groups:
       - YXVM-HKK
       - CLAW9909
       - SGGCNCN2
+      - SGG193
       - TEMPPPPP
       - USS-HOME-BWG
       - USS-2ISP-O
@@ -564,7 +565,7 @@ proxy-groups:
       - US-BWGDC01
       - TEMPPPPP
       - SGGCNCN2
-      
+      - SGG193
       
       
       
@@ -709,7 +710,7 @@ proxy-groups:
       - Lan proxy
       - DIRECT
       - USA-L
-      
+      - SGG193
       - HK-L
       - Relay-SG192-SGLXC
       - USS-2ISP-F
@@ -761,7 +762,7 @@ proxy-groups:
       - YXVM-HKK
       - sg3
       - sg3-zf
-      - USS-2ISP-F
+      - SGG193
       - DIRECT
     type: select
   - name: Tiktok馃幍
@@ -843,6 +844,7 @@ proxy-groups:
       - USS-HOME-BWG
       - USS-2ISP-O
       - SGGCNCN2
+      - SGG193
       - USA-L
       - SSGLXCC
       
@@ -975,7 +977,8 @@ proxy-groups:
     udp: true
     proxies:
       - SGGCNCN2
-      - SGLXCDN
+      # - SGLXCDN
+      - sg3
   - name: USS-2ISP-F
     type: fallback
     udp: true
@@ -1037,88 +1040,88 @@ proxy-groups:
 
 
 rules:
-  - DOMAIN,browser-intake-datadoghq.com,sg3
-  - DOMAIN,chat.openai.com.cdn.cloudflare.net,sg3
-  - DOMAIN,gemini.google.com,sg3
-  - DOMAIN,openai-api.arkoselabs.com,sg3
-  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,sg3
-  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,sg3
-  - DOMAIN,production-openaicom-storage.azureedge.net,sg3
-  - DOMAIN,static.cloudflareinsights.com,sg3
-  - DOMAIN-SUFFIX,ai.com,sg3
-  - DOMAIN-SUFFIX,algolia.net,sg3
-  - DOMAIN-SUFFIX,api.statsig.com,sg3
-  - DOMAIN-SUFFIX,auth0.com,sg3
-  - DOMAIN-SUFFIX,chatgpt.com,sg3
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3
-  - DOMAIN-SUFFIX,events.statsigapi.net,sg3
-  - DOMAIN-SUFFIX,featuregates.org,sg3
-  - DOMAIN-SUFFIX,host.livekit.cloud,sg3
-  - DOMAIN-SUFFIX,identrust.com,sg3
-  - DOMAIN-SUFFIX,intercom.io,sg3
-  - DOMAIN-SUFFIX,intercomcdn.com,sg3
-  - DOMAIN-SUFFIX,launchdarkly.com,sg3
-  - DOMAIN-SUFFIX,oaistatic.com,sg3
-  - DOMAIN-SUFFIX,oaiusercontent.com,sg3
-  - DOMAIN-SUFFIX,observeit.net,sg3
-  - DOMAIN-SUFFIX,openai.com,sg3
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3
-  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3
-  - DOMAIN-SUFFIX,segment.io,sg3
-  - DOMAIN-SUFFIX,sentry.io,sg3
-  - DOMAIN-SUFFIX,stripe.com,sg3
-  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3
-  - DOMAIN-KEYWORD,openai,sg3
-  - DOMAIN-SUFFIX,sideloadly.io,sg3
-  - DOMAIN-SUFFIX,cydia.ichitaso.com,sg3
+  - DOMAIN,browser-intake-datadoghq.com,sg3-zf
+  - DOMAIN,chat.openai.com.cdn.cloudflare.net,sg3-zf
+  - DOMAIN,gemini.google.com,sg3-zf
+  - DOMAIN,openai-api.arkoselabs.com,sg3-zf
+  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,sg3-zf
+  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,sg3-zf
+  - DOMAIN,production-openaicom-storage.azureedge.net,sg3-zf
+  - DOMAIN,static.cloudflareinsights.com,sg3-zf
+  - DOMAIN-SUFFIX,ai.com,sg3-zf
+  - DOMAIN-SUFFIX,algolia.net,sg3-zf
+  - DOMAIN-SUFFIX,api.statsig.com,sg3-zf
+  - DOMAIN-SUFFIX,auth0.com,sg3-zf
+  - DOMAIN-SUFFIX,chatgpt.com,sg3-zf
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3-zf
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3-zf
+  - DOMAIN-SUFFIX,events.statsigapi.net,sg3-zf
+  - DOMAIN-SUFFIX,featuregates.org,sg3-zf
+  - DOMAIN-SUFFIX,host.livekit.cloud,sg3-zf
+  - DOMAIN-SUFFIX,identrust.com,sg3-zf
+  - DOMAIN-SUFFIX,intercom.io,sg3-zf
+  - DOMAIN-SUFFIX,intercomcdn.com,sg3-zf
+  - DOMAIN-SUFFIX,launchdarkly.com,sg3-zf
+  - DOMAIN-SUFFIX,oaistatic.com,sg3-zf
+  - DOMAIN-SUFFIX,oaiusercontent.com,sg3-zf
+  - DOMAIN-SUFFIX,observeit.net,sg3-zf
+  - DOMAIN-SUFFIX,openai.com,sg3-zf
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3-zf
+  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3-zf
+  - DOMAIN-SUFFIX,segment.io,sg3-zf
+  - DOMAIN-SUFFIX,sentry.io,sg3-zf
+  - DOMAIN-SUFFIX,stripe.com,sg3-zf
+  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3-zf
+  - DOMAIN-KEYWORD,openai,sg3-zf
+  - DOMAIN-SUFFIX,sideloadly.io,sg3-zf
+  - DOMAIN-SUFFIX,cydia.ichitaso.com,sg3-zf
   # NAME: Copilot
-  - DOMAIN-SUFFIX,api.msn.com,sg3
-  - DOMAIN-SUFFIX,api.statsig.com,sg3
-  - DOMAIN-SUFFIX,assets.msn.com,sg3
-  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,sg3
-  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,sg3
-  - DOMAIN-SUFFIX,copilot.microsoft.com,sg3
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,sg3
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,sg3
-  - DOMAIN-SUFFIX,in.appcenter.ms,sg3
-  - DOMAIN-SUFFIX,location.microsoft.com,sg3
-  - DOMAIN-SUFFIX,odc.officeapps.live.com,sg3
-  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,sg3
-  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,sg3
-  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,sg3
-  - DOMAIN-SUFFIX,r.bing.com,sg3
-  - DOMAIN-SUFFIX,self.events.data.microsoft.com,sg3
-  - DOMAIN-SUFFIX,services.bingapis.com,sg3
-  - DOMAIN-SUFFIX,static.cloudflareinsights.com,sg3
-  - DOMAIN-SUFFIX,sydney.bing.com,sg3
-  - DOMAIN-SUFFIX,www.bing.com,sg3
-  - DOMAIN-SUFFIX,algolia.net,sg3
-  - DOMAIN-SUFFIX,microsoftapp.net,sg3
-  - DOMAIN-SUFFIX,auth0.com,sg3
-  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,sg3
-  - DOMAIN-SUFFIX,challenges.cloudflare.com,sg3
-  - DOMAIN-SUFFIX,chatgpt.com,sg3
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3
-  - DOMAIN-SUFFIX,edgeservices.bing.com,sg3
-  - DOMAIN-SUFFIX,events.statsigapi.net,sg3
-  - DOMAIN-SUFFIX,featuregates.org,sg3
-  - DOMAIN-SUFFIX,host.livekit.cloud,sg3
-  - DOMAIN-SUFFIX,identrust.com,sg3
-  - DOMAIN-SUFFIX,intercom.io,sg3
-  - DOMAIN-SUFFIX,intercomcdn.com,sg3
-  - DOMAIN-SUFFIX,launchdarkly.com,sg3
-  - DOMAIN-SUFFIX,oaistatic.com,sg3
-  - DOMAIN-SUFFIX,oaiusercontent.com,sg3
-  - DOMAIN-SUFFIX,observeit.net,sg3
-  - DOMAIN-SUFFIX,openai.com,sg3
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3
-  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3
-  - DOMAIN-SUFFIX,segment.io,sg3
-  - DOMAIN-SUFFIX,sentry.io,sg3
-  - DOMAIN-SUFFIX,stripe.com,sg3
-  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3
+  - DOMAIN-SUFFIX,api.msn.com,sg3-zf
+  - DOMAIN-SUFFIX,api.statsig.com,sg3-zf
+  - DOMAIN-SUFFIX,assets.msn.com,sg3-zf
+  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,sg3-zf
+  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,sg3-zf
+  - DOMAIN-SUFFIX,copilot.microsoft.com,sg3-zf
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,sg3-zf
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,sg3-zf
+  - DOMAIN-SUFFIX,in.appcenter.ms,sg3-zf
+  - DOMAIN-SUFFIX,location.microsoft.com,sg3-zf
+  - DOMAIN-SUFFIX,odc.officeapps.live.com,sg3-zf
+  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,sg3-zf
+  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,sg3-zf
+  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,sg3-zf
+  - DOMAIN-SUFFIX,r.bing.com,sg3-zf
+  - DOMAIN-SUFFIX,self.events.data.microsoft.com,sg3-zf
+  - DOMAIN-SUFFIX,services.bingapis.com,sg3-zf
+  - DOMAIN-SUFFIX,static.cloudflareinsights.com,sg3-zf
+  - DOMAIN-SUFFIX,sydney.bing.com,sg3-zf
+  - DOMAIN-SUFFIX,www.bing.com,sg3-zf
+  - DOMAIN-SUFFIX,algolia.net,sg3-zf
+  - DOMAIN-SUFFIX,microsoftapp.net,sg3-zf
+  - DOMAIN-SUFFIX,auth0.com,sg3-zf
+  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,sg3-zf
+  - DOMAIN-SUFFIX,challenges.cloudflare.com,sg3-zf
+  - DOMAIN-SUFFIX,chatgpt.com,sg3-zf
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,sg3-zf
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,sg3-zf
+  - DOMAIN-SUFFIX,edgeservices.bing.com,sg3-zf
+  - DOMAIN-SUFFIX,events.statsigapi.net,sg3-zf
+  - DOMAIN-SUFFIX,featuregates.org,sg3-zf
+  - DOMAIN-SUFFIX,host.livekit.cloud,sg3-zf
+  - DOMAIN-SUFFIX,identrust.com,sg3-zf
+  - DOMAIN-SUFFIX,intercom.io,sg3-zf
+  - DOMAIN-SUFFIX,intercomcdn.com,sg3-zf
+  - DOMAIN-SUFFIX,launchdarkly.com,sg3-zf
+  - DOMAIN-SUFFIX,oaistatic.com,sg3-zf
+  - DOMAIN-SUFFIX,oaiusercontent.com,sg3-zf
+  - DOMAIN-SUFFIX,observeit.net,sg3-zf
+  - DOMAIN-SUFFIX,openai.com,sg3-zf
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,sg3-zf
+  - DOMAIN-SUFFIX,openaicom.imgix.net,sg3-zf
+  - DOMAIN-SUFFIX,segment.io,sg3-zf
+  - DOMAIN-SUFFIX,sentry.io,sg3-zf
+  - DOMAIN-SUFFIX,stripe.com,sg3-zf
+  - DOMAIN-SUFFIX,turn.livekit.cloud,sg3-zf
   
   # NAME: Claude
   # AUTHOR: blackmatrix7
@@ -1128,9 +1131,9 @@ rules:
   # DOMAIN-SUFFIX: 2
   # TOTAL: 3
   # payload:
-  - DOMAIN,cdn.usefathom.com,sg3
-  - DOMAIN-SUFFIX,anthropic.com,sg3
-  - DOMAIN-SUFFIX,claude.ai,sg3
+  - DOMAIN,cdn.usefathom.com,sg3-zf
+  - DOMAIN-SUFFIX,anthropic.com,sg3-zf
+  - DOMAIN-SUFFIX,claude.ai,sg3-zf
   
   
   # NAME: Gemini
@@ -1142,19 +1145,19 @@ rules:
   # DOMAIN-SUFFIX: 7
   # TOTAL: 13
   #payload:
-  - DOMAIN,ai.google.dev,sg3
-  - DOMAIN,alkalimakersuite-pa.clients6.google.com,sg3
-  - DOMAIN,makersuite.google.com,sg3
-  - DOMAIN-SUFFIX,bard.google.com,sg3
-  - DOMAIN-SUFFIX,deepmind.com,sg3
-  - DOMAIN-SUFFIX,deepmind.google,sg3
-  - DOMAIN-SUFFIX,gemini.google.com,sg3
-  - DOMAIN-SUFFIX,generativeai.google,sg3
-  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,sg3
-  - DOMAIN-SUFFIX,apis.google.com,sg3
-  - DOMAIN-KEYWORD,colab,sg3
-  - DOMAIN-KEYWORD,developerprofiles,sg3
-  - DOMAIN-KEYWORD,generativelanguage,sg3
+  - DOMAIN,ai.google.dev,sg3-zf
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,sg3-zf
+  - DOMAIN,makersuite.google.com,sg3-zf
+  - DOMAIN-SUFFIX,bard.google.com,sg3-zf
+  - DOMAIN-SUFFIX,deepmind.com,sg3-zf
+  - DOMAIN-SUFFIX,deepmind.google,sg3-zf
+  - DOMAIN-SUFFIX,gemini.google.com,sg3-zf
+  - DOMAIN-SUFFIX,generativeai.google,sg3-zf
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,sg3-zf
+  - DOMAIN-SUFFIX,apis.google.com,sg3-zf
+  - DOMAIN-KEYWORD,colab,sg3-zf
+  - DOMAIN-KEYWORD,developerprofiles,sg3-zf
+  - DOMAIN-KEYWORD,generativelanguage,sg3-zf
   
   
      # ------------my edition -------------s
