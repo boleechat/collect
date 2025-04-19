@@ -46,6 +46,56 @@ dns:
       - 240.0.0.0/4
       - 0.0.0.0/32
 proxies:
+  - name: HKHEN0402
+    type: vless
+    server: 46.232.104.127
+    port: 32540
+    uuid: 69e67894-dba3-4db2-a6ff-25a2b7f777f0
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: 588198.xyz
+    reality-opts:
+      public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
+      short-id: 9e524a66
+    client-fingerprint: qq
+  - name: SGGCN2_Bage
+    type: vless
+    server: 46.3.192.55
+    port: 20021
+    uuid: 00000000-0000-0000-0000-000000000000
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: chrome
+    servername: 46.3.110.127
+    # skip-cert-verify: true
+    # fingerprint: xxxx
+    ws-opts:
+      path: /c217a028-e706-4875-a3bd-04c34df14a08/ws-213.218.228.6/?ed=2560
+      headers:
+        Host: 46.3.110.127
+      # v2ray-http-upgrade: false
+      # v2ray-http-upgrade-fast-open: false
+  - name: SGGCNCN2
+    type: vless
+    server: 46.3.192.55
+    port: 443
+    uuid: 00000000-0000-0000-0000-000000000000
+    udp: true
+    tls: true
+    network: ws
+    client-fingerprint: chrome
+    servername: 46.3.110.127
+    # skip-cert-verify: true
+    # fingerprint: xxxx
+    ws-opts:
+      path: "/c217a028-e706-4875-a3bd-04c34df14a08/ws-46.3.192.55/?ed=2560"
+      headers:
+        Host: 46.3.110.127
+      # v2ray-http-upgrade: false
+      # v2ray-http-upgrade-fast-open: false
   - name: "nr"
     type: ssr
     server: cn17.mynode.me
@@ -57,20 +107,6 @@ proxies:
     obfs-param: 20176-L1juani984.download.microsoft.com
     # protocol-param: "#"
     # udp: true
-  - name: HKHEN0402
-    type: vless
-    server: 46.232.104.127
-    port: 32541
-    uuid: 9def3b8c-f142-49cc-a191-c60b05768a68
-    network: tcp
-    tls: true
-    udp: true
-    flow: xtls-rprx-vision
-    servername: 588198.xyz
-    reality-opts:
-      public-key: BmN14YDJNevPEtIopxYqR-cBtUF7ls07GGLiUaToslA
-      short-id: 9e524a66
-    client-fingerprint: chrome
   - name: SGG193
     type: vless
     server: sgg193.aloofly.eu
@@ -99,24 +135,6 @@ proxies:
       public-key: D4SqVQVjB3NMI0CNRKp7k_dbbFdyHR85K-BKkacxyBI
       short-id: ec6967f4da85
     client-fingerprint: chrome
-  - name: SGGCNCN2
-    type: vless
-    server: 46.3.192.55
-    port: 443
-    uuid: 00000000-0000-0000-0000-000000000000
-    udp: true
-    tls: true
-    network: ws
-    # client-fingerprint: random # Available: "chrome","firefox","safari","random","none"
-    servername: 46.3.106.249
-    # skip-cert-verify: true
-    # fingerprint: xxxx
-    ws-opts:
-      path: "/c217a028-e706-4875-a3bd-04c34df14a08/ws-46.3.192.55/?ed=2560"
-      headers:
-        Host: 46.3.106.249
-      # v2ray-http-upgrade: false
-      # v2ray-http-upgrade-fast-open: false
   - name: iepl-warp
     type: wireguard
     server: sh-iepl2.gorelay.xyz
@@ -516,6 +534,7 @@ proxy-groups:
       - YXVM-HKK
       - CLAW9909
       - SGGCNCN2
+      - SGGCN2_Bage
       - SGG193
       - TEMPPPPP
       - USS-HOME-BWG
@@ -759,6 +778,8 @@ proxy-groups:
       - SSGLXCC
       - Relay-YXVM-SG3
       - Relay-SG192-SGLXC
+      - SGGCN2_Bage
+      - SGGCNCN2
       - YXVM-HKK
       - sg3
       - sg3-zf
@@ -1040,88 +1061,88 @@ proxy-groups:
 
 
 rules:
-  - DOMAIN,browser-intake-datadoghq.com,SGGCNCN2
-  - DOMAIN,chat.openai.com.cdn.cloudflare.net,SGGCNCN2
-  - DOMAIN,gemini.google.com,SGGCNCN2
-  - DOMAIN,openai-api.arkoselabs.com,SGGCNCN2
-  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,SGGCNCN2
-  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,SGGCNCN2
-  - DOMAIN,production-openaicom-storage.azureedge.net,SGGCNCN2
-  - DOMAIN,static.cloudflareinsights.com,SGGCNCN2
-  - DOMAIN-SUFFIX,ai.com,SGGCNCN2
-  - DOMAIN-SUFFIX,algolia.net,SGGCNCN2
-  - DOMAIN-SUFFIX,api.statsig.com,SGGCNCN2
-  - DOMAIN-SUFFIX,auth0.com,SGGCNCN2
-  - DOMAIN-SUFFIX,chatgpt.com,SGGCNCN2
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,SGGCNCN2
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,SGGCNCN2
-  - DOMAIN-SUFFIX,events.statsigapi.net,SGGCNCN2
-  - DOMAIN-SUFFIX,featuregates.org,SGGCNCN2
-  - DOMAIN-SUFFIX,host.livekit.cloud,SGGCNCN2
-  - DOMAIN-SUFFIX,identrust.com,SGGCNCN2
-  - DOMAIN-SUFFIX,intercom.io,SGGCNCN2
-  - DOMAIN-SUFFIX,intercomcdn.com,SGGCNCN2
-  - DOMAIN-SUFFIX,launchdarkly.com,SGGCNCN2
-  - DOMAIN-SUFFIX,oaistatic.com,SGGCNCN2
-  - DOMAIN-SUFFIX,oaiusercontent.com,SGGCNCN2
-  - DOMAIN-SUFFIX,observeit.net,SGGCNCN2
-  - DOMAIN-SUFFIX,openai.com,SGGCNCN2
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,SGGCNCN2
-  - DOMAIN-SUFFIX,openaicom.imgix.net,SGGCNCN2
-  - DOMAIN-SUFFIX,segment.io,SGGCNCN2
-  - DOMAIN-SUFFIX,sentry.io,SGGCNCN2
-  - DOMAIN-SUFFIX,stripe.com,SGGCNCN2
-  - DOMAIN-SUFFIX,turn.livekit.cloud,SGGCNCN2
-  - DOMAIN-KEYWORD,openai,SGGCNCN2
-  - DOMAIN-SUFFIX,sideloadly.io,SGGCNCN2
-  - DOMAIN-SUFFIX,cydia.ichitaso.com,SGGCNCN2
+  - DOMAIN,browser-intake-datadoghq.com,SGG193
+  - DOMAIN,chat.openai.com.cdn.cloudflare.net,SGG193
+  - DOMAIN,gemini.google.com,SGG193
+  - DOMAIN,openai-api.arkoselabs.com,SGG193
+  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net,SGG193
+  - DOMAIN,openaicomproductionae4b.blob.core.windows.net,SGG193
+  - DOMAIN,production-openaicom-storage.azureedge.net,SGG193
+  - DOMAIN,static.cloudflareinsights.com,SGG193
+  - DOMAIN-SUFFIX,ai.com,SGG193
+  - DOMAIN-SUFFIX,algolia.net,SGG193
+  - DOMAIN-SUFFIX,api.statsig.com,SGG193
+  - DOMAIN-SUFFIX,auth0.com,SGG193
+  - DOMAIN-SUFFIX,chatgpt.com,SGG193
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,SGG193
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,SGG193
+  - DOMAIN-SUFFIX,events.statsigapi.net,SGG193
+  - DOMAIN-SUFFIX,featuregates.org,SGG193
+  - DOMAIN-SUFFIX,host.livekit.cloud,SGG193
+  - DOMAIN-SUFFIX,identrust.com,SGG193
+  - DOMAIN-SUFFIX,intercom.io,SGG193
+  - DOMAIN-SUFFIX,intercomcdn.com,SGG193
+  - DOMAIN-SUFFIX,launchdarkly.com,SGG193
+  - DOMAIN-SUFFIX,oaistatic.com,SGG193
+  - DOMAIN-SUFFIX,oaiusercontent.com,SGG193
+  - DOMAIN-SUFFIX,observeit.net,SGG193
+  - DOMAIN-SUFFIX,openai.com,SGG193
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,SGG193
+  - DOMAIN-SUFFIX,openaicom.imgix.net,SGG193
+  - DOMAIN-SUFFIX,segment.io,SGG193
+  - DOMAIN-SUFFIX,sentry.io,SGG193
+  - DOMAIN-SUFFIX,stripe.com,SGG193
+  - DOMAIN-SUFFIX,turn.livekit.cloud,SGG193
+  - DOMAIN-KEYWORD,openai,SGG193
+  - DOMAIN-SUFFIX,sideloadly.io,SGG193
+  - DOMAIN-SUFFIX,cydia.ichitaso.com,SGG193
   # NAME: Copilot
-  - DOMAIN-SUFFIX,api.msn.com,SGGCNCN2
-  - DOMAIN-SUFFIX,api.statsig.com,SGGCNCN2
-  - DOMAIN-SUFFIX,assets.msn.com,SGGCNCN2
-  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,SGGCNCN2
-  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,SGGCNCN2
-  - DOMAIN-SUFFIX,copilot.microsoft.com,SGGCNCN2
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,SGGCNCN2
-  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,SGGCNCN2
-  - DOMAIN-SUFFIX,in.appcenter.ms,SGGCNCN2
-  - DOMAIN-SUFFIX,location.microsoft.com,SGGCNCN2
-  - DOMAIN-SUFFIX,odc.officeapps.live.com,SGGCNCN2
-  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,SGGCNCN2
-  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,SGGCNCN2
-  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,SGGCNCN2
-  - DOMAIN-SUFFIX,r.bing.com,SGGCNCN2
-  - DOMAIN-SUFFIX,self.events.data.microsoft.com,SGGCNCN2
-  - DOMAIN-SUFFIX,services.bingapis.com,SGGCNCN2
-  - DOMAIN-SUFFIX,static.cloudflareinsights.com,SGGCNCN2
-  - DOMAIN-SUFFIX,sydney.bing.com,SGGCNCN2
-  - DOMAIN-SUFFIX,www.bing.com,SGGCNCN2
-  - DOMAIN-SUFFIX,algolia.net,SGGCNCN2
-  - DOMAIN-SUFFIX,microsoftapp.net,SGGCNCN2
-  - DOMAIN-SUFFIX,auth0.com,SGGCNCN2
-  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,SGGCNCN2
-  - DOMAIN-SUFFIX,challenges.cloudflare.com,SGGCNCN2
-  - DOMAIN-SUFFIX,chatgpt.com,SGGCNCN2
-  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,SGGCNCN2
-  - DOMAIN-SUFFIX,client-api.arkoselabs.com,SGGCNCN2
-  - DOMAIN-SUFFIX,edgeservices.bing.com,SGGCNCN2
-  - DOMAIN-SUFFIX,events.statsigapi.net,SGGCNCN2
-  - DOMAIN-SUFFIX,featuregates.org,SGGCNCN2
-  - DOMAIN-SUFFIX,host.livekit.cloud,SGGCNCN2
-  - DOMAIN-SUFFIX,identrust.com,SGGCNCN2
-  - DOMAIN-SUFFIX,intercom.io,SGGCNCN2
-  - DOMAIN-SUFFIX,intercomcdn.com,SGGCNCN2
-  - DOMAIN-SUFFIX,launchdarkly.com,SGGCNCN2
-  - DOMAIN-SUFFIX,oaistatic.com,SGGCNCN2
-  - DOMAIN-SUFFIX,oaiusercontent.com,SGGCNCN2
-  - DOMAIN-SUFFIX,observeit.net,SGGCNCN2
-  - DOMAIN-SUFFIX,openai.com,SGGCNCN2
-  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,SGGCNCN2
-  - DOMAIN-SUFFIX,openaicom.imgix.net,SGGCNCN2
-  - DOMAIN-SUFFIX,segment.io,SGGCNCN2
-  - DOMAIN-SUFFIX,sentry.io,SGGCNCN2
-  - DOMAIN-SUFFIX,stripe.com,SGGCNCN2
-  - DOMAIN-SUFFIX,turn.livekit.cloud,SGGCNCN2
+  - DOMAIN-SUFFIX,api.msn.com,SGG193
+  - DOMAIN-SUFFIX,api.statsig.com,SGG193
+  - DOMAIN-SUFFIX,assets.msn.com,SGG193
+  - DOMAIN-SUFFIX,browser-intake-datadoghq.com,SGG193
+  - DOMAIN-SUFFIX,chat.openai.com.cdn.cloudflare.net,SGG193
+  - DOMAIN-SUFFIX,copilot.microsoft.com,SGG193
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoft.net,SGG193
+  - DOMAIN-SUFFIX,gateway.bingviz.microsoftapp.net,SGG193
+  - DOMAIN-SUFFIX,in.appcenter.ms,SGG193
+  - DOMAIN-SUFFIX,location.microsoft.com,SGG193
+  - DOMAIN-SUFFIX,odc.officeapps.live.com,SGG193
+  - DOMAIN-SUFFIX,openai-api.arkoselabs.com,SGG193
+  - DOMAIN-SUFFIX,openaicomproductionae4b.blob.core.windows.net,SGG193
+  - DOMAIN-SUFFIX,production-openaicom-storage.azureedge.net,SGG193
+  - DOMAIN-SUFFIX,r.bing.com,SGG193
+  - DOMAIN-SUFFIX,self.events.data.microsoft.com,SGG193
+  - DOMAIN-SUFFIX,services.bingapis.com,SGG193
+  - DOMAIN-SUFFIX,static.cloudflareinsights.com,SGG193
+  - DOMAIN-SUFFIX,sydney.bing.com,SGG193
+  - DOMAIN-SUFFIX,www.bing.com,SGG193
+  - DOMAIN-SUFFIX,algolia.net,SGG193
+  - DOMAIN-SUFFIX,microsoftapp.net,SGG193
+  - DOMAIN-SUFFIX,auth0.com,SGG193
+  - DOMAIN-SUFFIX,bing-shopping.microsoft-falcon.io,SGG193
+  - DOMAIN-SUFFIX,challenges.cloudflare.com,SGG193
+  - DOMAIN-SUFFIX,chatgpt.com,SGG193
+  - DOMAIN-SUFFIX,chatgpt.livekit.cloud,SGG193
+  - DOMAIN-SUFFIX,client-api.arkoselabs.com,SGG193
+  - DOMAIN-SUFFIX,edgeservices.bing.com,SGG193
+  - DOMAIN-SUFFIX,events.statsigapi.net,SGG193
+  - DOMAIN-SUFFIX,featuregates.org,SGG193
+  - DOMAIN-SUFFIX,host.livekit.cloud,SGG193
+  - DOMAIN-SUFFIX,identrust.com,SGG193
+  - DOMAIN-SUFFIX,intercom.io,SGG193
+  - DOMAIN-SUFFIX,intercomcdn.com,SGG193
+  - DOMAIN-SUFFIX,launchdarkly.com,SGG193
+  - DOMAIN-SUFFIX,oaistatic.com,SGG193
+  - DOMAIN-SUFFIX,oaiusercontent.com,SGG193
+  - DOMAIN-SUFFIX,observeit.net,SGG193
+  - DOMAIN-SUFFIX,openai.com,SGG193
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net,SGG193
+  - DOMAIN-SUFFIX,openaicom.imgix.net,SGG193
+  - DOMAIN-SUFFIX,segment.io,SGG193
+  - DOMAIN-SUFFIX,sentry.io,SGG193
+  - DOMAIN-SUFFIX,stripe.com,SGG193
+  - DOMAIN-SUFFIX,turn.livekit.cloud,SGG193
   
   # NAME: Claude
   # AUTHOR: blackmatrix7
@@ -1131,9 +1152,9 @@ rules:
   # DOMAIN-SUFFIX: 2
   # TOTAL: 3
   # payload:
-  - DOMAIN,cdn.usefathom.com,SGGCNCN2
-  - DOMAIN-SUFFIX,anthropic.com,SGGCNCN2
-  - DOMAIN-SUFFIX,claude.ai,SGGCNCN2
+  - DOMAIN,cdn.usefathom.com,SGG193
+  - DOMAIN-SUFFIX,anthropic.com,SGG193
+  - DOMAIN-SUFFIX,claude.ai,SGG193
   
   
   # NAME: Gemini
@@ -1145,19 +1166,19 @@ rules:
   # DOMAIN-SUFFIX: 7
   # TOTAL: 13
   #payload:
-  - DOMAIN,ai.google.dev,SGGCNCN2
-  - DOMAIN,alkalimakersuite-pa.clients6.google.com,SGGCNCN2
-  - DOMAIN,makersuite.google.com,SGGCNCN2
-  - DOMAIN-SUFFIX,bard.google.com,SGGCNCN2
-  - DOMAIN-SUFFIX,deepmind.com,SGGCNCN2
-  - DOMAIN-SUFFIX,deepmind.google,SGGCNCN2
-  - DOMAIN-SUFFIX,gemini.google.com,SGGCNCN2
-  - DOMAIN-SUFFIX,generativeai.google,SGGCNCN2
-  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,SGGCNCN2
-  - DOMAIN-SUFFIX,apis.google.com,SGGCNCN2
-  - DOMAIN-KEYWORD,colab,SGGCNCN2
-  - DOMAIN-KEYWORD,developerprofiles,SGGCNCN2
-  - DOMAIN-KEYWORD,generativelanguage,SGGCNCN2
+  - DOMAIN,ai.google.dev,SGG193
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,SGG193
+  - DOMAIN,makersuite.google.com,SGG193
+  - DOMAIN-SUFFIX,bard.google.com,SGG193
+  - DOMAIN-SUFFIX,deepmind.com,SGG193
+  - DOMAIN-SUFFIX,deepmind.google,SGG193
+  - DOMAIN-SUFFIX,gemini.google.com,SGG193
+  - DOMAIN-SUFFIX,generativeai.google,SGG193
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com,SGG193
+  - DOMAIN-SUFFIX,apis.google.com,SGG193
+  - DOMAIN-KEYWORD,colab,SGG193
+  - DOMAIN-KEYWORD,developerprofiles,SGG193
+  - DOMAIN-KEYWORD,generativelanguage,SGG193
   
   
      # ------------my edition -------------s
