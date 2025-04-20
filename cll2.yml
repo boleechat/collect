@@ -110,16 +110,16 @@ proxies:
   - name: SGG193
     type: vless
     server: sgg193.aloofly.eu
-    port: 20010
-    uuid: 5d87b4f5-4d42-4612-b31d-e634ecd6487f
+    port: 37792
+    uuid: 36b2c7c1-85c4-461c-bf9c-ee4ac13417ac
     network: tcp
     tls: true
     udp: true
     flow: xtls-rprx-vision
     servername: www.amd.com
     reality-opts:
-      public-key: nTcEXdtEYBEJvpdMDeAeGOg1DzihfRjlR23haU2hgXw
-      short-id: 09a452
+      public-key: U9ziTueZnc3iakEW1_b5CeG8cJb7bcQ3C8EAfwHOFi4
+      short-id: 34eb5336d1e3
     client-fingerprint: ios
   - name: akile-us4837
     type: vless
