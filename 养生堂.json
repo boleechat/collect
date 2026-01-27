@@ -1,0 +1,17 @@
+{
+    "首页": "1",
+    "分类url": "https://pc.api.btime.com/btimeweb/infoFlow?list_id={cateId}&refresh=1&count=40",
+    "分类": "2025$btv_08da67cea600bf3c78973427bfaba12d_s0_2025#2024$btv_08da67cea600bf3c78973427bfaba12d_s0_2024#2023$btv_08da67cea600bf3c78973427bfaba12d_s0_2023#2022$btv_08da67cea600bf3c78973427bfaba12d_s0_2022",
+    "数组": "list\":[&&]",
+    "图片": "covers\":[\"&&\"",
+    "标题": "title\":\"&&\"",
+    "链接": "https://item.btime.com/&&\"",
+    "链接前缀": "",
+    "链接后缀": "",
+    "搜索url": "https://search.btime.com/search?q={wd}&type=video",
+    "播放说明": "养生堂专用解析",
+    "播放数组": "video_streams&&audio_streams",
+    "播放列表": "stream&&duration",
+    "播放标题": "stream_vbt\":\"&&\"",
+    "播放链接": "url\":\"&&\""
+}
