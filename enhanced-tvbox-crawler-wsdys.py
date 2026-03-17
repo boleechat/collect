@@ -36,7 +36,7 @@ class Spider(Spider):
 
     # Base Configuration
     host = 'https://www.btime.com'
-    base_url = 'https://www.btime.com/btv/btvws_dys'
+    base_url = 'https://www.btime.com/btv/yst'
     
    # --- 修改前 ---
     # available_years = ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018']
