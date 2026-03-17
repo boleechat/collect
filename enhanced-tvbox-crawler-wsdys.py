@@ -38,11 +38,16 @@ class Spider(Spider):
     host = 'https://www.btime.com'
     base_url = 'https://www.btime.com/btv/btvws_yst'
     
-    # Available years for content
-    available_years = ['2025', '2024', '2023', '2022', '2021', '2020', '2019']
-    
-    # Current year for default content
-    current_year = '2025'
+   # --- 修改前 ---
+    # available_years = ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018']
+    # current_year = '2025'
+
+	# --- 修改后 ---
+    # 获取当前年份
+    _now = datetime.now()
+    current_year = str(_now.year)
+    # 动态生成从当前年份到2019年的列表（降序）
+    available_years = [str(y) for y in range(_now.year, 2018, -1)]
     
     # API URL templates - Using cursor-based pagination
     api_url_template = "https://pc.api.btime.com/btimeweb/infoFlow?list_id=btv_06ed423197a0ef0cab055a475b8e3b4b_s0_{year}_{month:02d}&refresh=1&count=50&cursor={cursor}"
