@@ -353,24 +353,24 @@ class Spider(Spider):
     def _get_tencent_direct_url(self, vid):
         """
         POST vd6.l.qq.com/proxyhttp，精确还原 superplayer.js 的请求。
-        响应结构（F12 实测）:
-          vinfo(JSON字符串) → vl → vi[0] → ul.ui[0].url + fn + ?guid=...&vkey=fvkey
+        注意：flowid 每次请求都是随机生成的（F12两次抓包值不同已确认）。
+        cKey 留空也能获取到视频地址（F12实测两次响应均正常返回vinfo）。
+        响应结构: vinfo(JSON) → vl.vi[0] → ul.ui[0].url + fn + ?guid=...&vkey=fvkey
         """
-        import urllib.parse, time as _time
+        import urllib.parse, time as _time, uuid
 
-        guid    = '76dd34894279343eb209c5309b8d8059'
-        flowid  = 'd30dd6b3aedfcd19ff25d28c568cde85'
-        tm      = str(int(_time.time()))
+        guid   = '76dd34894279343eb209c5309b8d8059'
+        flowid = uuid.uuid4().hex        # 每次随机，与浏览器行为一致
+        tm     = str(int(_time.time()))
+
         ehost_q = urllib.parse.quote(
-            f'https://v.qq.com/txp/iframe/player.html?vid={vid}', safe='')
+            'https://v.qq.com/txp/iframe/player.html', safe='')
         refer_q = urllib.parse.quote('https://m.superzhuang.com/', safe='')
 
         vinfoparam = (
             f'charge=0&otype=ojson&defnpayver=0'
             f'&spau=1&spaudio=0&spwm=1&sphls=1'
-            f'&host=v.qq.com'
-            f'&refer={refer_q}'
-            f'&ehost={ehost_q}'
+            f'&host=v.qq.com&refer={refer_q}&ehost={ehost_q}'
             f'&sphttps=1&encryptVer=8.5&cKey='
             f'&clip=4&guid={guid}&flowid={flowid}'
             f'&platform=11001&sdtfrom=v3010&appVer=1.60.0'
@@ -383,56 +383,10 @@ class Spider(Spider):
             f'&atime=0&playctrl=0&drm=0&multidrm=0'
         )
 
-        adparam = (
-            f'adType=preAd&vid={vid}'
-            f'&flowid={flowid}&sspKey=fany'
-        )
-
-        # sspAdParam 精确还原（来自 F12 载荷）
-        ssp_ad_param = json.dumps({
-            "ad_scene": 1,
-            "pre_ad_params": {
-                "ad_scene": 1,
-                "user_type": -1,
-                "video": {
-                    "base": {"vid": vid},
-                    "is_live": False,
-                    "type_id": 0,
-                    "referer": "https://m.superzhuang.com/",
-                    "url": f"https://v.qq.com/txp/iframe/player.html?vid={vid}",
-                    "flow_id": flowid,
-                    "fmt": "shd"
-                },
-                "platform": {
-                    "guid": guid,
-                    "channel_id": 191,
-                    "site": "web",
-                    "platform": "H5",
-                    "from": 3,
-                    "device": "iphone",
-                    "play_platform": 11001,
-                    "pv_tag": "m_superzhuang_com"
-                },
-                "player": {
-                    "version": "1.60.0",
-                    "plugin": "4.2.37",
-                    "switch": 1,
-                    "play_type": "0",
-                    "img_type": "webp"
-                },
-                "token": {
-                    "type": 0, "vuid": 0,
-                    "vuser_session": "", "app_id": "",
-                    "open_id": "", "access_token": ""
-                }
-            }
-        }, ensure_ascii=False, separators=(',', ':'))
-
         payload = json.dumps({
-            'buid':        'vinfoad',
-            'adparam':     adparam,
-            'sspAdParam':  ssp_ad_param,
-            'vinfoparam':  vinfoparam,
+            'buid':       'vinfoad',
+            'adparam':    f'adType=preAd&vid={vid}&flowid={flowid}&sspKey=fany',
+            'vinfoparam': vinfoparam,
         }, ensure_ascii=False)
 
         tx_headers = {
@@ -455,19 +409,19 @@ class Spider(Spider):
                 )
                 resp.raise_for_status()
                 outer = resp.json()
+                print(f"[proxyhttp] {api} errCode={outer.get('errCode')} vinfo_len={len(outer.get('vinfo',''))}")
 
                 vinfo_raw = outer.get('vinfo', '')
                 if not vinfo_raw:
-                    print(f"[proxyhttp] {api} → no vinfo field")
                     continue
 
                 vinfo = json.loads(vinfo_raw)
                 url = self._extract_url_from_vinfo(vinfo, guid)
                 if url:
-                    print(f"[proxyhttp] {api} success → {url[:80]}...")
+                    print(f"[proxyhttp] success → {url[:80]}...")
                     return url
                 else:
-                    print(f"[proxyhttp] {api} → vinfo parsed but no url")
+                    print(f"[proxyhttp] {api} → vinfo parsed but no url found")
 
             except Exception as e:
                 print(f"[proxyhttp] {api} error: {e}")
