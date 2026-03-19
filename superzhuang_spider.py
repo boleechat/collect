@@ -286,7 +286,8 @@ class Spider(Spider):
     def _resolve_play_url(self, detail_page_url):
         """
         访问超级装详情页，提取腾讯视频 vid，
-        尝试获取 mp4 直链；失败则返回腾讯视频播放页 URL。
+        尝试用 proxyhttp 获取 mp4 直链；
+        失败则返回 iframe URL（parse:1 交给TVBox嗅探）。
         """
         try:
             page_headers = {
@@ -300,20 +301,21 @@ class Spider(Spider):
             html = resp.text
 
             tx_vid = self._extract_tx_vid(html)
-
             if not tx_vid:
-                print(f"[_resolve_play_url] No tx_vid in {detail_page_url}")
+                print(f"[_resolve_play_url] No vid found in {detail_page_url}")
                 return detail_page_url
 
             print(f"[_resolve_play_url] tx_vid={tx_vid}")
 
-            # 尝试获取直链
+            # 先尝试获取直链 mp4
             direct = self._get_tencent_direct_url(tx_vid)
             if direct:
                 return direct
 
-            # 兜底：腾讯视频播放页
-            return f'https://v.qq.com/x/page/{tx_vid}.html'
+            # 兜底：返回 iframe URL，parse:1 嗅探
+            iframe_url = f'https://v.qq.com/txp/iframe/player.html?vid={tx_vid}'
+            print(f"[_resolve_play_url] fallback to iframe: {iframe_url}")
+            return iframe_url
 
         except Exception as e:
             print(f"[_resolve_play_url] Error: {e}")
@@ -349,43 +351,104 @@ class Spider(Spider):
         return None
 
     def _get_tencent_direct_url(self, vid):
-        """尝试从腾讯视频 API 获取 mp4 直链"""
+        """
+        通过腾讯视频 proxyhttp 接口获取带 vkey 的真实 mp4 地址。
+        接口来源：F12 抓包 superplayer.js 内部请求链路。
+        guid 固定值来自 bosskv 载荷抓包。
+        """
+        guid = '76dd34894279343eb209c5309b8d8059'
+
         tx_headers = {
             'User-Agent': self.headers['User-Agent'],
-            'Referer':    'https://v.qq.com/',
+            'Referer':    f'https://v.qq.com/txp/iframe/player.html?vid={vid}',
+            'Origin':     'https://v.qq.com',
             'Accept':     'application/json, text/plain, */*',
         }
 
-        # 方案1: vd.l.qq.com
+        # ── 方案1: proxyhttp（F12 抓包确认的接口）──────────────────
+        try:
+            # 请求体结构来自 superplayer.js 内部逻辑
+            payload = json.dumps({
+                'buid':       'vinfoad',
+                'video_id':   vid,
+                'vid':        vid,
+                'charge':     0,
+                'defaultfmt': 'auto',
+                'otype':      'json',
+                'platform':   '11001',      # 手机端 platform（来自 bosskv 载荷）
+                'sdtfrom':    'v3010',
+                'host':       'v.qq.com',
+                'referer':    'https://m.superzhuang.com/',
+                'ehost':      'https://v.qq.com/txp/iframe/player.html',
+                'appver':     '3.5.57',
+                'guid':       guid,
+                'flowid':     '',
+                'defn':       'shd',
+                'defnpayver': 0,
+                'fhdswitch':  0,
+                'logintoken': '',
+                'refer':      'out_poster',
+                'ptag':       'm_superzhuang_com',
+                'vt':         200,
+            })
+            resp = self.session.post(
+                'https://vd.l.qq.com/proxyhttp',
+                data=payload,
+                headers={**tx_headers, 'Content-Type': 'application/json'},
+                timeout=15,
+            )
+            data = resp.json()
+            # proxyhttp 返回的 vinfo 是一个 JSON 字符串，需要二次解析
+            vinfo_str = data.get('vinfo', '')
+            if isinstance(vinfo_str, str) and vinfo_str:
+                vinfo = json.loads(vinfo_str)
+            else:
+                vinfo = data
+            url = self._find_mp4_url(vinfo)
+            if url:
+                print(f"[_get_tencent_direct_url] proxyhttp POST success: {url[:80]}...")
+                return url
+        except Exception as e:
+            print(f"[_get_tencent_direct_url] proxyhttp POST: {e}")
+
+        # ── 方案2: vd.l.qq.com GET ────────────────────────────────
         try:
             url = (
                 f'https://vd.l.qq.com/proxyhttp'
                 f'?buid=vinfoad&output=json&video_id={vid}'
-                f'&platform=10901&charge=0'
-                f'&guid=76dd34894279343eb209c5309b8d8059'
+                f'&platform=11001&charge=0&guid={guid}'
                 f'&otype=json&defnpayver=0&informal_idc=1'
+                f'&ehost=https%3A%2F%2Fv.qq.com%2Ftxp%2Fiframe%2Fplayer.html'
+                f'&refer=out_poster&ptag=m_superzhuang_com'
             )
-            resp = self.session.get(url, headers=tx_headers, timeout=10)
+            resp = self.session.get(url, headers=tx_headers, timeout=15)
             data = resp.json()
-            result = self._find_mp4_url(data)
+            vinfo_str = data.get('vinfo', '')
+            if isinstance(vinfo_str, str) and vinfo_str:
+                vinfo = json.loads(vinfo_str)
+            else:
+                vinfo = data
+            result = self._find_mp4_url(vinfo)
             if result:
+                print(f"[_get_tencent_direct_url] proxyhttp GET success: {result[:80]}...")
                 return result
         except Exception as e:
-            print(f"[_get_tencent_direct_url] vd.l.qq.com: {e}")
+            print(f"[_get_tencent_direct_url] proxyhttp GET: {e}")
 
-        # 方案2: vv.video.qq.com
+        # ── 方案3: vv.video.qq.com（老接口备用）─────────────────────
         try:
             url = (
                 f'https://vv.video.qq.com/getinfo'
-                f'?vids={vid}&platform=10901&charge=0&otype=json'
+                f'?vids={vid}&platform=11001&charge=0&otype=json&guid={guid}'
             )
-            resp = self.session.get(url, headers=tx_headers, timeout=10)
+            resp = self.session.get(url, headers=tx_headers, timeout=15)
             text = resp.text
             m = re.search(r'\{.*\}', text, re.DOTALL)
             if m:
                 data = json.loads(m.group())
                 result = self._find_mp4_url(data)
                 if result:
+                    print(f"[_get_tencent_direct_url] vv.video.qq.com success: {result[:80]}...")
                     return result
         except Exception as e:
             print(f"[_get_tencent_direct_url] vv.video.qq.com: {e}")
