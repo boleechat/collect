@@ -107,16 +107,39 @@ class Spider(Spider):
         cover      = parts[2] if len(parts) > 2 else ''
 
         detail_url = self.detail_page_tpl.format(cid=content_id)
-        play_url   = self._resolve_play_url(detail_url)
+
+        # 访问详情页，从 iframe src 提取腾讯视频 vid
+        play_url = detail_url  # 兜底
+        try:
+            page_headers = {
+                'User-Agent':      self.headers['User-Agent'],
+                'Referer':         'https://m.superzhuang.com/',
+                'Accept':          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.9',
+            }
+            resp = self.session.get(detail_url, headers=page_headers, timeout=15)
+            resp.raise_for_status()
+            html = resp.text
+
+            tx_vid = self._extract_tx_vid(html)
+            if tx_vid:
+                # 直接构造 iframe URL，parse:1 由 TVBox 嗅探处理
+                play_url = f'https://v.qq.com/txp/iframe/player.html?vid={tx_vid}'
+                print(f'[detailContent] contentId={content_id} vid={tx_vid}')
+            else:
+                print(f'[detailContent] No vid found for contentId={content_id}')
+
+        except Exception as e:
+            print(f'[detailContent] Error: {e}')
 
         vod = {
-            'vod_id':       ids[0],
-            'vod_name':     title,
-            'vod_pic':      cover,
-            'vod_content':  '',
-            'vod_remarks':  '',
+            'vod_id':        ids[0],
+            'vod_name':      title,
+            'vod_pic':       cover,
+            'vod_content':   '',
+            'vod_remarks':   '',
             'vod_play_from': 'SuperZhuang',
-            'vod_play_url': f'{title}${play_url}',
+            'vod_play_url':  f'{title}${play_url}',
         }
         return {'list': [vod]}
 
@@ -135,7 +158,14 @@ class Spider(Spider):
 
     # ─── 播放 ─────────────────────────────────────────────────────
     def playerContent(self, flag, id, vipFlags):
-        # 已是 mp4 直链
+        """
+        TVBox 错误码 3003 = 播放地址加载失败，说明直接播放 v.qq.com iframe URL 不行。
+        解决方案：
+          - mp4 直链 → parse:0 直接播放
+          - 腾讯视频任何形式 → parse:1 交给 TVBox 内置解析器嗅探
+          - 超级装详情页 → 先提取 vid，再按上面规则处理
+        """
+        # 已是 mp4 直链 → 直接播放
         if '.mp4' in id and any(cdn in id for cdn in ('qqvideo', 'smtcdns', 'ugchsy', 'ugcbsy')):
             return {
                 'parse': 0,
@@ -146,7 +176,19 @@ class Spider(Spider):
                 },
             }
 
-        # 腾讯视频播放页 → 交给解析器
+        # 腾讯视频 iframe 播放器页面 → parse:1 嗅探
+        # 格式: https://v.qq.com/txp/iframe/player.html?vid=z3544nb763i
+        if 'v.qq.com/txp/iframe' in id:
+            return {
+                'parse': 1,
+                'url':   id,
+                'header': {
+                    'User-Agent': self.headers['User-Agent'],
+                    'Referer':    'https://m.superzhuang.com/',
+                },
+            }
+
+        # 腾讯视频其他页面 → parse:1 嗅探
         if 'v.qq.com' in id:
             return {
                 'parse': 1,
@@ -154,16 +196,15 @@ class Spider(Spider):
                 'header': {'User-Agent': self.headers['User-Agent']},
             }
 
-        # 超级装详情页 → 重新解析
+        # 超级装详情页 → 重新提取 vid
         if 'm.superzhuang.com' in id:
             play_url = self._resolve_play_url(id)
             return {
-                'parse': 1 if 'v.qq.com' in play_url else 0,
+                'parse': 1,
                 'url':   play_url,
                 'header': {
                     'User-Agent': self.headers['User-Agent'],
-                    'Referer':    'https://v.qq.com/' if 'qq.com' in play_url
-                                  else 'https://m.superzhuang.com/',
+                    'Referer':    'https://m.superzhuang.com/',
                 },
             }
 
