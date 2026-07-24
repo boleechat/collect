@@ -1,0 +1,216 @@
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: :9090
+
+dns:
+  enabled: true
+  nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  fallback:
+    - 8.8.8.8
+    - 8.8.4.4
+    - tls://1.0.0.1:853
+    - tls://dns.google:853
+
+proxies:
+  - {name: "美国US-xtls-reality", type: vless, server: shan.nn1105.ccwu.cc, port: 8881, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, network: tcp, tls: true, flow: xtls-rprx-vision, servername: addons.mozilla.org, client-fingerprint: chrome, reality-opts: {public-key: mfxVOIcgkIuxTpiBZW-wUvAu1ZjhbYBak9lufp5zeGo, short-id: ""}, udp: true}
+  - {name: "美国US-hysteria2", type: hysteria2, server: shan.nn1105.ccwu.cc, port: 8882, password: b7686998-c071-4ef2-94c0-d5545b4ebb63, sni: shan.nn1105.ccwu.cc, skip-cert-verify: true}
+  - {name: "美国US-tuic", type: tuic, server: shan.nn1105.ccwu.cc, port: 8883, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, password: b7686998-c071-4ef2-94c0-d5545b4ebb63, sni: shan.nn1105.ccwu.cc, skip-cert-verify: true, alpn: [h3], congestion-controller: bbr}
+  - {name: "美国US-ShadowTLS", type: ss, server: shan.nn1105.ccwu.cc, port: 8884, cipher: 2022-blake3-aes-128-gcm, password: 47+kJztEh49Ot5TvTcnIiw==, plugin: shadow-tls, client-fingerprint: chrome, plugin-opts: {host: addons.mozilla.org, password: "b7686998-c071-4ef2-94c0-d5545b4ebb63", version: 3}}
+  - {name: "美国US-shadowsocks", type: ss, server: shan.nn1105.ccwu.cc, port: 8885, cipher: 2022-blake3-aes-128-gcm, password: 47+kJztEh49Ot5TvTcnIiw==, udp: true}
+  - {name: "美国US-trojan", type: trojan, server: shan.nn1105.ccwu.cc, port: 8886, password: b7686998-c071-4ef2-94c0-d5545b4ebb63, sni: shan.nn1105.ccwu.cc, skip-cert-verify: true, udp: true}
+  - {name: "美国US-vmess-ws", type: vmess, server: shan.nn1105.ccwu.cc, port: 8887, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, alterId: 0, cipher: auto, network: ws, ws-opts: {path: "/vmessws", headers: {Host: shan.nn1105.ccwu.cc}}, udp: true, tls: false}
+  - {name: "美国US-vless-ws-tls", type: vless, server: shan.nn1105.ccwu.cc, port: 8888, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, network: ws, tls: true, servername: shan.nn1105.ccwu.cc, skip-cert-verify: true, ws-opts: {path: "/vlessws", headers: {Host: shan.nn1105.ccwu.cc}, max-early-data: 2560, early-data-header-name: "Sec-WebSocket-Protocol"}, udp: true}
+  - {name: "美国US-h2-reality", type: vless, server: shan.nn1105.ccwu.cc, port: 8889, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, network: http, tls: true, servername: addons.mozilla.org, client-fingerprint: chrome, reality-opts: {public-key: mfxVOIcgkIuxTpiBZW-wUvAu1ZjhbYBak9lufp5zeGo, short-id: ""}}
+  - {name: "美国US-grpc-reality", type: vless, server: shan.nn1105.ccwu.cc, port: 8890, uuid: b7686998-c071-4ef2-94c0-d5545b4ebb63, network: grpc, tls: true, udp: true, flow: , client-fingerprint: chrome, servername: addons.mozilla.org, grpc-opts: {  grpc-service-name: "grpc" }, reality-opts: { public-key: mfxVOIcgkIuxTpiBZW-wUvAu1ZjhbYBak9lufp5zeGo, short-id: "" }}
+  - {name: "美国US-anytls", type: anytls, server: shan.nn1105.ccwu.cc, port: 8891, password: b7686998-c071-4ef2-94c0-d5545b4ebb63, sni: shan.nn1105.ccwu.cc, skip-cert-verify: true, client-fingerprint: chrome}
+
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - DIRECT
+      - 美国US-xtls-reality
+      - 美国US-hysteria2
+      - 美国US-tuic
+      - 美国US-ShadowTLS
+      - 美国US-shadowsocks
+      - 美国US-trojan
+      - 美国US-vmess-ws
+      - 美国US-vless-ws-tls
+      - 美国US-h2-reality
+      - 美国US-grpc-reality
+      - 美国US-anytls
+
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 美国US-xtls-reality
+      - 美国US-hysteria2
+      - 美国US-tuic
+      - 美国US-ShadowTLS
+      - 美国US-shadowsocks
+
+  - name: 📲 电报消息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 💬 Ai
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 📹 油管视频
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 🎥 奈飞视频
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 📺 巴哈姆特
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 🌍 国外媒体
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+  - name: 📺 哔哩哔哩
+    type: select
+    proxies:
+      - 🎯 全球直连
+
+  - name: 🌏 国内媒体
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: 📢 谷歌FCM
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: ⓗ️ 微软Bing
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: ⓗ️ 微软云盘
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: ⓗ️ 微软服务
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: 🍎 苹果服务
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: 🎮 游戏平台
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: 🎶 网易音乐
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+
+  - name: 🛑 广告拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 🍜 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - DIRECT
+
+rules:
+- DOMAIN-SUFFIX,openai.com,💬 Ai
+- DOMAIN-SUFFIX,chatgpt.com,💬 Ai
+- DOMAIN-SUFFIX,claude.ai,💬 Ai
+- DOMAIN-SUFFIX,deepseek.com,💬 Ai
+- DOMAIN-SUFFIX,bing.com,💬 Ai
+- DOMAIN-SUFFIX,perplexity.ai,💬 Ai
+- DOMAIN-KEYWORD,openai,💬 Ai
+- DOMAIN-SUFFIX,telegram.org,📲 电报消息
+- DOMAIN-SUFFIX,t.me,📲 电报消息
+- IP-CIDR,91.108.56.0/22,📲 电报消息,no-resolve
+- IP-CIDR,149.154.160.0/20,📲 电报消息,no-resolve
+- DOMAIN-SUFFIX,youtube.com,📹 油管视频
+- DOMAIN-SUFFIX,ytimg.com,📹 油管视频
+- DOMAIN-SUFFIX,youtu.be,📹 油管视频
+- DOMAIN-SUFFIX,netflix.com,🎥 奈飞视频
+- DOMAIN-KEYWORD,netflix,🎥 奈飞视频
+- DOMAIN-SUFFIX,bilibili.com,📺 哔哩哔哩
+- DOMAIN-SUFFIX,b23.tv,📺 哔哩哔哩
+- DOMAIN-KEYWORD,bilibili,📺 哔哩哔哩
+- DOMAIN-SUFFIX,gamer.com.tw,📺 巴哈姆特
+- DOMAIN-SUFFIX,bahamut.com.tw,📺 巴哈姆特
+- IP-CIDR,10.0.0.0/8,🎯 全球直连,no-resolve
+- IP-CIDR,172.16.0.0/12,🎯 全球直连,no-resolve
+- IP-CIDR,192.168.0.0/16,🎯 全球直连,no-resolve
+- IP-CIDR,127.0.0.0/8,🎯 全球直连,no-resolve
+- IP-CIDR,198.18.0.0/16,🎯 全球直连,no-resolve
+- GEOIP,CN,🎯 全球直连
+- GEOSITE,cn,🎯 全球直连
+- GEOSITE,youtube,📹 油管视频
+- GEOSITE,netflix,🎥 奈飞视频
+- GEOSITE,telegram,📲 电报消息
+- GEOSITE,bilibili,📺 哔哩哔哩
+- MATCH,🍜 漏网之鱼
